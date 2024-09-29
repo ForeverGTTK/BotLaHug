@@ -1,0 +1,64 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Club Info Section -->
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Club Image -->
+            {% if details.photo %}
+            <img src="{{ details.photo }}" alt="{{ details.name }} logo" class="img-fluid rounded shadow-sm">
+            {% else %}
+            <img src="/path_to_default_image/default.jpg" alt="Default logo" class="img-fluid rounded shadow-sm">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h1 class="display-4">{{ details.name }}</h1>
+            <p class="lead text-muted">{{ details.description }}</p>
+        </div>
+    </div>
+
+    <!-- Articles Section -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2 class="mb-4">Articles</h2>
+            <div class="list-group">
+                {% for article_title, article_info in articles.items %}
+                <a href="/articles/{{ article_info.web_name }}" class="list-group-item list-group-item-action">
+                    <table>
+                        <tr>
+
+                            {% if article_info.image %}
+                            <td style="padding:5px">
+                                <img src="{{ article_info.image }}" alt="{{ article_info.description }}" class="img-fluid">
+                            </td>
+                            {% endif %}
+                            <td style="padding:5px">
+                                <h3 class="mb-1">{{ article_title }}</h3>
+                                <p>{{ article_info.description }}</p>
+                                <small>Published on {{ article_info.publication_date|date:"F j, Y" }}</small>
+
+                            </td>
+                        </tr>
+                    </table>
+                        </a>
+                {% empty %}
+                <p>No articles found for this club.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty Div for Future Development -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div id="future-development" class="border p-4 text-center">
+                <h4>More features coming soon!</h4>
+                <p>This section will be used for future development. Stay tuned!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

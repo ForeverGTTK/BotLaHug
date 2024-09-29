@@ -1,0 +1,37 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="../../../{{ photo.image }}" alt="{{ name }} logo" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-8">
+            <h1 class="display-4">{{ name }}</h1>
+            <p class="lead text-muted">{{ description }}</p>
+
+            <ul class="list-group mb-4">
+                <li class="list-group-item"><strong>Topic:</strong> {{ topic }}</li>
+                <li class="list-group-item"><strong>Location:</strong> {{ location }}</li>
+                <li class="list-group-item"><strong>joined BotlaHug in:</strong> {{ created_at }}</li>
+            </ul>
+
+            <h4>Contact Information</h4>
+            <ul class="list-group">
+                {% if contact_person %}
+                <li class="list-group-item"><strong>Contact Person:</strong> {{ contact_person }}</li>
+                {% endif %}
+                {% if contact_email %}
+                <li class="list-group-item"><strong>Email:</strong> <a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
+                {% endif %}
+                {% if contact_phone %}
+                <li class="list-group-item"><strong>Phone:</strong> <a href="tel:{{ contact_phone }}">{{ contact_phone }}</a></li>
+                {% endif %}
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

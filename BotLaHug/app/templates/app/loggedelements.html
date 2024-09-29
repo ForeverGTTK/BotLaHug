@@ -1,0 +1,21 @@
+{% if user.is_authenticated %}
+<div class="navbar-collapse collapse" id="viewsNav">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'about' %}">Explore Clubs</a>
+        </li>
+      
+    </ul>
+</div>
+
+
+{% else %}
+
+<ul class="navbar-nav mr-auto">
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Log in to accsess more features</a>
+    </li>
+</ul>
+
+{% endif %}
