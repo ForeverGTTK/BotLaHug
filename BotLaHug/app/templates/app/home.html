@@ -1,0 +1,31 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+    {% for topic, clubs in sorted_clubs.items%}
+
+<div class="jumbotron">
+
+    <h1>{{ topic }}</h1>
+    <tr>
+        {% for club_name, details in clubs.items %}
+        <td>
+            <h2>{{ club_name }}</h2>
+            <p class="lead">{{ details.description }}</p>
+            <p>
+                <a href="club/{{ details.web_name }}/">
+                    <img src="{{ details.photo.image }}" alt="{{ club_name }} logo" class="club-logo img-fluid">
+                    <p>{{details.photo.description}}</p>
+                    <br>{{ club_name }} &raquo;
+                </a>
+            </p>
+        </td>
+        {% if forloop.counter|divisibleby:3 %}
+    </tr><tr>
+        {% endif %}
+        {% endfor %}
+    </tr>
+</div>
+    {% endfor %}
+
+{% endblock %}
