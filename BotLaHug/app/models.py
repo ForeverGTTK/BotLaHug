@@ -4,6 +4,7 @@ here we have the existing urls (users/sites)
 inside the app there are individual models that could be attached for each club
 """
 
+from enum import unique
 from typing import Dict, List
 from unittest.util import _MAX_LENGTH
 from xml.parsers.expat import model
@@ -122,7 +123,7 @@ class Clubs(BaseModel):
         contact_person (CharField): The name of the primary contact person for the club.
     """
     
-    name = models.CharField(max_length=255, null=False, blank=False)
+    name = models.CharField(max_length=255,unique=True, null=False, blank=False)
     topic = models.ForeignKey(Topics, on_delete=models.CASCADE, null=True, related_name='clubs')
     location = models.CharField(max_length=255, null=True, blank=True)
     web_name = models.CharField(max_length=100, unique=True, null=False, blank=False)
@@ -287,3 +288,86 @@ class Article(BaseModel):
 
     def __str__(self):
         return self.title
+    
+class Season(BaseModel):
+    """
+    Represents a season for a club.
+    
+    Fields:
+        club (ForeignKey to Clubs): The club associated with the season.
+        start_date (DateField): The date when the season starts.
+        end_date (DateField): The date when the season ends.
+        description (TextField): Optional field to provide details about the season.
+        is_active (BooleanField): Indicates whether the season is currently active.
+    """
+    
+    club = models.ForeignKey('Clubs', on_delete=models.CASCADE, related_name='seasons')
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True)  
+    
+    class Meta:
+        ordering = ['-start_date']
+    
+    def __str__(self):
+        return f"{self.club.name} Season {self.start_date.year} - {self.end_date.year}"
+    
+    def is_current_season(self):
+        """
+        Returns True if the current date is between the start and end date.
+        """
+        from django.utils import timezone
+        now = timezone.now().date()
+        return self.start_date <= now <= self.end_date
+    
+class Athlete(BaseModel):
+    """
+    Represents an athlete with personal and contact details.
+    
+    Fields:
+        athlete_id (CharField): A unique identifier for the athlete.
+        club (ForeignKey to Clubs): The club to which the athlete belongs.
+        first_name (CharField): The athlete's first name.
+        last_name (CharField): The athlete's last name.
+        dob (DateField): The date of birth of the athlete.
+        email (EmailField): The athlete's email address.
+        phone (CharField): The athlete's phone number.
+        parent_name (CharField): The name of the athlete's parent or guardian.
+        parent_phone (CharField): The phone number of the athlete's parent or guardian.
+        home_address (TextField): The home address of the athlete.
+        profile_picture (ImageField): The profile picture of the athlete.
+    """
+    
+    athlete_id = models.CharField(max_length=10, null=True, blank=True)
+    club = models.ForeignKey('Clubs', on_delete=models.CASCADE, related_name='athletes')
+    first_name = models.CharField(max_length=100, null=False, blank=False)
+    last_name = models.CharField(max_length=100, null=False, blank=False)
+    dob = models.DateField(null=False, blank=False)
+    email = models.EmailField(null=False, blank=False)
+    phone = models.CharField(max_length=10, null=False, blank=True)  
+    parent_name = models.CharField(max_length=100, null=True, blank=True)
+    parent_phone = models.CharField(max_length=10, null=True, blank=True)
+    home_address = models.TextField(null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+
+    def get_athlete(self):
+        """
+        Returns a dictionary containing the athlete's information.
+        """
+        return {
+            'ID': self.ID,
+            'athlete_id': self.athlete_id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'dob': self.dob,
+            'email': self.email,
+            'phone': self.phone,
+            'parent_name': self.parent_name,
+            'parent_phone': self.parent_phone,
+            'home_address': self.home_address,
+            'profile_picture': self.profile_picture.url if self.profile_picture else None,
+        }
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} (Athlete ID: {self.athlete_id})'
+    

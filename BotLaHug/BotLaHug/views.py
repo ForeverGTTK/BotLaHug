@@ -13,7 +13,7 @@ from app import models
 
 
 
-def page_render(request,page_address,context):
+def page_render(request,page_address,context,club_name):
     
     context.__setitem__('easterEgg',True if datetime.now().minute%2==0 else False)
     # operations on elements to add
@@ -25,6 +25,7 @@ def page_render(request,page_address,context):
         title= ' '.join(word.lower() for word in app_name)
     
     # appending items to page context
+    context.__setitem__('name',club_name)  
     context.__setitem__('title',str(title))  
     context.__setitem__('year',datetime.now().year)
 
@@ -42,7 +43,8 @@ def contact(request,club_name):
     return page_render(
         request,
         'BotLaHug/contact.html',
-        details
+        details,
+        club_name=club_name
     )
 
 def home(request, club_name):
@@ -65,6 +67,7 @@ def home(request, club_name):
     for article in articles:
         image = models.Images.objects.filter(club=club, page='Articles', name=article.title).first()
         club_articles[article.title] = {
+            'ID': article.ID,
             'image': image.image.url if image else None,
             'description': article.content[:100],  # Short description of the article
             'publication_date': article.publication_date,
@@ -81,5 +84,88 @@ def home(request, club_name):
         {
             'details': details,
             'articles': club_articles
+        },
+        club_name=club_name
+    )
+
+def article(request,club_name,article_ID):
+    """
+    Renders the article page with detailed information about the selected article.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        article_id (int): The ID of the article used to retrieve the specific article instance.
+
+    Returns:
+        HttpResponse: Rendered article page with details and related articles.
+    """
+    
+    article = get_object_or_404(models.Article, ID=article_ID)
+    related_articles = models.Article.objects.filter(club=article.club).exclude(ID=article_ID)
+    article_images = models.Images.get_images_for_page(club=article.club, page='Articles', name=article.title)
+
+    article_details = {
+        'ID':article_ID,
+        'title': article.title,
+        'content': article.content,
+        'publication_date': article.publication_date,
+        'image': article_images if article_images else None  
         }
+
+    return page_render(
+        request,
+        'BotLaHug/article.html',
+        {
+            'article_details': article_details,
+            'related_articles': related_articles
+        },
+        club_name=club_name
+    )
+
+def athlete_profile(request,club_name, athlete_id):
+    """
+    Renders the athlete profile page with all necessary information such as profile picture, contact info, etc.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        athlete_id (str): The unique ID of the athlete.
+    
+    Returns:
+        HttpResponse: Rendered athlete profile page.
+    """
+    
+    athlete = get_object_or_404(models.Athlete, ID=athlete_id)
+    
+    return page_render(
+        request, 
+        'BotLaHug/athlete_profile.html', 
+        {'athlete': athlete},
+        club_name=club_name
+        )
+
+def club_athletes(request, club_name):
+    """
+    Renders the athletes page displaying all athletes for a specific club.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_id (int): The ID of the club to fetch athletes for.
+
+    Returns:
+        HttpResponse: Rendered athletes page with the list of athletes for the specified club.
+    """
+    
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    
+    athletes = club.athletes.all()  
+    
+    return page_render(
+        request, 
+        'BotLaHug/club_athletes.html', 
+        {
+            'club': club, 
+            'athletes': athletes
+        },
+        club_name=club_name
+
     )

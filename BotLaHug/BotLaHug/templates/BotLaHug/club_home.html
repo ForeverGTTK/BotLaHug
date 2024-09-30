@@ -8,7 +8,7 @@
         <div class="col-md-4">
             <!-- Club Image -->
             {% if details.photo %}
-            <img src="{{ details.photo }}" alt="{{ details.name }} logo" class="img-fluid rounded shadow-sm">
+            <img src="../../{{ details.photo.image }}" alt="{{ details.name }} logo" class="img-fluid rounded shadow-sm">
             {% else %}
             <img src="/path_to_default_image/default.jpg" alt="Default logo" class="img-fluid rounded shadow-sm">
             {% endif %}
@@ -25,7 +25,7 @@
             <h2 class="mb-4">Articles</h2>
             <div class="list-group">
                 {% for article_title, article_info in articles.items %}
-                <a href="/articles/{{ article_info.web_name }}" class="list-group-item list-group-item-action">
+                <a href="articles/{{ article_info.ID }}" class="list-group-item list-group-item-action">
                     <table>
                         <tr>
 

@@ -16,6 +16,9 @@ urlpatterns = [
     path('', btlviews.home, name='home'),
     
     path('club/<str:club_name>/',clubViews.home),
+    path('club/<str:club_name>/articles/<str:article_ID>',clubViews.article),
+    path('club/<str:club_name>/athlete/<str:athlete_id>',clubViews.athlete_profile),
+    path('club/<str:club_name>/athletes',clubViews.club_athletes),
     path('club/<str:club_name>/contact/',clubViews.contact),
 
 

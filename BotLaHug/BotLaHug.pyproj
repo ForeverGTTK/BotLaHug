@@ -65,6 +65,9 @@
     <Content Include="app\templates\app\about.html" />
     <Content Include="app\templates\app\contact.html" />
     <Content Include="app\templates\app\home.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\article.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\athlete_profile.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\club_athletes.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_home.html" />
     <Content Include="BotLaHug\templates\BotLaHug\contact.html" />
     <Content Include="BotLaHug\templates\BotLaHug\layout.html" />

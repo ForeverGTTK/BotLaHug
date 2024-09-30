@@ -1,0 +1,59 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Article Info Section -->
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Article Image Carousel -->
+            <div id="articleImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    {% for image in article_details.image %}
+                    <button type="button" data-bs-target="#articleImageCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% for image in article_details.image %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image }}" alt="Article image {{ forloop.counter }}" class="d-block w-100 img-fluid rounded shadow-sm">
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#articleImageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#articleImageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h1 class="display-4">{{ article_details.title }}</h1>
+            <p class="lead text-muted">{{ article_details.content }}</p>
+            <p><strong>Published on:</strong> {{ article_details.publication_date|date:"F j, Y" }}</p>
+        </div>
+
+    </div>
+
+    <!-- Related Articles Section -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2 class="mb-4">Related Articles</h2>
+            <div class="list-group">
+                {% for related_article in related_articles %}
+                <a href="/articles/{{ related_article.web_name }}" class="list-group-item list-group-item-action">
+                    <h3 class="mb-1">{{ related_article.title }}</h3>
+                    <small>Published on {{ related_article.publication_date|date:"F j, Y" }}</small>
+                </a>
+                {% empty %}
+                <p>No related articles found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
