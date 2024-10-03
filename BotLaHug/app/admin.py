@@ -11,6 +11,7 @@ models= [
     Article,
     Season,
     Athlete,
+    Class,
 ]
 for model in models:
     admin.site.register(model)

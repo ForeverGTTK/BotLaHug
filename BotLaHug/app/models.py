@@ -11,6 +11,7 @@ from xml.parsers.expat import model
 from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import get_object_or_404
+from multiselectfield import MultiSelectField
 from django.utils import timezone
 import uuid
 
@@ -371,3 +372,90 @@ class Athlete(BaseModel):
     def __str__(self):
         return f'{self.first_name} {self.last_name} (Athlete ID: {self.athlete_id})'
     
+class Class(BaseModel):
+    """
+    Represents a class in the system.
+    
+    Fields:
+        name (CharField): The name of the class.
+        season (ForeignKey to Season): The season during which the class takes place.
+        start_date (DateField): The start date of the class.
+        end_date (DateField): The end date of the class.
+        days_of_week (MultiSelectField): Days of the week when the class is held.
+        start_time (TimeField): The time when the class starts (hour).
+        end_time (TimeField): The time when the class ends (hour).
+        place (CharField): The location of the class.
+        teacher (CharField): The name of the teacher or instructor.
+        price (DecimalField): The price of the class.
+        registration_fee (DecimalField): The fee for registration.
+    """
+    DAYS_OF_WEEK = (
+        ('sun', 'Sunday'),
+        ('mon', 'Monday'),
+        ('tue', 'Tuesday'),
+        ('wed', 'Wednesday'),
+        ('thu', 'Thursday'),
+        ('fri', 'Friday'),
+        ('sat', 'Saturday'),
+    )
+    name = models.CharField(max_length=255, null=False, blank=False)
+    season = models.ForeignKey('Season', on_delete=models.CASCADE, related_name='classes')
+    start_date = models.DateField(null=False, blank=False)
+    end_date = models.DateField(null=False, blank=False)
+    days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, null=True, blank=True)
+    start_time = models.TimeField(null=False, blank=False)
+    end_time = models.TimeField(null=False, blank=False)
+    place = models.CharField(max_length=255, null=True, blank=True)
+    teacher = models.CharField(max_length=255, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+    registration_fee = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+
+    class Meta:
+        ordering = ['start_date', 'start_time']
+    
+    def __str__(self):
+        return f"{self.name} - {self.season}"
+
+    @classmethod
+    def get_classes_by_current_season(cls, club):
+        """
+        Fetch all the classes relevant to the current season for a specific club and return a dictionary
+        with all the class details (description, teacher, place, price, registration fee).
+        
+        Args:
+            club (Clubs): The club to fetch relevant classes for.
+        
+        Returns:
+            dict: A dictionary where the key is the class name and the value is a dictionary with all class details.
+        """
+        from django.utils import timezone
+
+        # Fetch the current date
+        now = timezone.now().date()
+
+        # Find the current season for the club based on the date range
+        current_season = Season.objects.filter(club=club, start_date__lte=now, end_date__gte=now).first()
+
+        # If there is no current season, return an empty dictionary
+        if not current_season:
+            return {}
+
+        # Fetch classes for the current season
+        classes = cls.objects.filter(season=current_season)
+
+        # Prepare the dictionary with all the class details
+        class_dict = {}
+        for c in classes:
+            class_dict[c.name] = {
+                'description': c.description,
+                'teacher': c.teacher,
+                'place': c.place,
+                'price': c.price,
+                'registration_fee': c.registration_fee,
+                'start_date': c.start_date,
+                'end_date': c.end_date,
+                'start_time': c.start_time,
+                'end_time': c.end_time,
+            }
+
+        return class_dict
