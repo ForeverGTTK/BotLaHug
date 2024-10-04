@@ -13,17 +13,25 @@ from app import views as btlviews
 from BotLaHug import views as clubViews
 
 urlpatterns = [
-    path('', btlviews.home, name='home'),
-    
+    #club views    
     path('club/<str:club_name>/',clubViews.home),
     path('club/<str:club_name>/articles/<str:article_ID>',clubViews.article),
-    path('club/<str:club_name>/athlete/<str:athlete_id>',clubViews.athlete_profile),
-    path('club/<str:club_name>/athletes',clubViews.club_athletes),
+    #athlete club views
+    path('club/<str:club_name>/athlete/<str:athlete_id>',clubViews.athlete_profile,name='athlete_profile'),
+    path('club/<str:club_name>/athlete/',clubViews.find_athlete ,name='find_athlete'),
+    path('club/<str:club_name>/athletes/',clubViews.club_athletes),
+    
+    #classes club views
+     path('club/<str:club_name>/classes/', clubViews.club_classes, name='club_classes'),
+     
+    # more class views
     path('club/<str:club_name>/contact/',clubViews.contact),
-
-
+ 
+    # app views from btl - bot_La_hug
+    path('', btlviews.home, name='home'),
     path('contact/', btlviews.contact, name='contact'),
     path('about/', btlviews.about, name='about'),
+   
     path('login/',
          LoginView.as_view
          (

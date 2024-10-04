@@ -67,9 +67,11 @@
     <Content Include="app\templates\app\home.html" />
     <Content Include="BotLaHug\templates\BotLaHug\article.html" />
     <Content Include="BotLaHug\templates\BotLaHug\athlete_profile.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\club_classes.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_athletes.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_home.html" />
     <Content Include="BotLaHug\templates\BotLaHug\contact.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\find_athlete.html" />
     <Content Include="BotLaHug\templates\BotLaHug\layout.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loggedelements.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loginpartial.html" />

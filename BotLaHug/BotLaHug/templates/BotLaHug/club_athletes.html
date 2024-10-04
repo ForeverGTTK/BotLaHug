@@ -24,7 +24,7 @@
         </thead>
         <tbody>
             {% for athlete in athletes %}
-            <tr class="clickable-row" data-href="athlete/{{athlete.ID}}">
+            <tr class="clickable-row" data-href="/club/{{name}}/athlete/{{athlete.ID}}">
                 <td>{{ forloop.counter }}</td>
                 <td>
                     {% if athlete.profile_picture %}
@@ -52,7 +52,6 @@
 </div>
 
 <script>
-    // Add JavaScript to make the entire row clickable
     document.addEventListener('DOMContentLoaded', function () {
         var rows = document.querySelectorAll('.clickable-row');
         rows.forEach(function (row) {

@@ -169,3 +169,75 @@ def club_athletes(request, club_name):
         club_name=club_name
 
     )
+
+def find_athlete(request, club_name):
+    """
+    Renders the find athlete page and processes the search request for an athlete.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The web_name of the club used to retrieve the specific club instance.
+
+    Returns:
+        HttpResponse: Redirects to the athlete profile page if found, otherwise renders the find athlete page.
+    """
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+
+    # If the form is submitted (GET request with athlete_id)
+    if 'athlete_id' in request.GET:
+        athlete_id = request.GET.get('athlete_id')
+        
+        # Try to find the athlete by ID within the specified club
+        try:
+            athlete = models.Athlete.objects.get(athlete_id=athlete_id, club=club)
+            # Redirect to the athlete's profile page
+            return redirect('athlete_profile', club_name=club_name, athlete_id=athlete.ID)
+        except models.Athlete.DoesNotExist:
+            # If the athlete is not found, render the same page with an error message
+            context = {
+                'club_logo_url': club.get_club().get('photo').image.url,
+                'club_name': club.name,
+                'error_message': 'Athlete not found. Please check the ID and try again.'
+            }
+            return page_render(
+                request, 
+                'BotLaHug/find_athlete.html', 
+                context,
+                club_name=club_name
+            )
+
+    context = {
+        'club_logo_url': club.get_club().get('photo').image.url,
+    }
+
+    return page_render(
+        request, 
+        'BotLaHug/find_athlete.html', 
+        context,
+        club_name=club_name
+    )
+
+def club_classes(request, club_name):
+    """
+    Renders the classes page displaying all classes for a specific club.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The web_name of the club to fetch classes for.
+
+    Returns:
+        HttpResponse: Rendered classes page with the list of classes for the specified club.
+    """
+    
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    
+    classes = models.Class.get_classes_by_current_season(club)
+    
+    return page_render(
+        request, 
+        'BotLaHug/club_classes.html', 
+        {
+            'classes': classes
+        },
+        club_name=club_name
+    )

@@ -1,18 +1,14 @@
 {% extends "BotLaHug/layout.html" %}
 
 {% block content %}
+<div class="mb-4" style="overflow: hidden; height: 20vh; ">
+    <!-- Set container height to 20% of viewport and hide overflow -->
+    <img src="../../../{{ details.photo.image }}" alt="{{ club_name }} logo" class="img-fluid rounded shadow-sm" style="width: 100%; object-fit: cover; opacity: 0.6; margin-top: -10%;">
+</div>
 
 <div class="container mt-5">
     <!-- Club Info Section -->
     <div class="row">
-        <div class="col-md-4">
-            <!-- Club Image -->
-            {% if details.photo %}
-            <img src="../../{{ details.photo.image }}" alt="{{ details.name }} logo" class="img-fluid rounded shadow-sm">
-            {% else %}
-            <img src="/path_to_default_image/default.jpg" alt="Default logo" class="img-fluid rounded shadow-sm">
-            {% endif %}
-        </div>
         <div class="col-md-8">
             <h1 class="display-4">{{ details.name }}</h1>
             <p class="lead text-muted">{{ details.description }}</p>
@@ -42,7 +38,7 @@
                             </td>
                         </tr>
                     </table>
-                        </a>
+                </a>
                 {% empty %}
                 <p>No articles found for this club.</p>
                 {% endfor %}
@@ -55,7 +51,7 @@
         <div class="col-md-12">
             <div id="future-development" class="border p-4 text-center">
                 <h4>More features coming soon!</h4>
-                <p>This section will be used for future development. Stay tuned!</p>
+                <p>Stay tuned for future development!</p>
             </div>
         </div>
     </div>

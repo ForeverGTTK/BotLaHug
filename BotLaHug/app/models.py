@@ -399,7 +399,7 @@ class Class(BaseModel):
         ('sat', 'Saturday'),
     )
     name = models.CharField(max_length=255, null=False, blank=False)
-    season = models.ForeignKey('Season', on_delete=models.CASCADE, related_name='classes')
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name='classes')
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
     days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, null=True, blank=True)
@@ -434,7 +434,7 @@ class Class(BaseModel):
         now = timezone.now().date()
 
         # Find the current season for the club based on the date range
-        current_season = Season.objects.filter(club=club, start_date__lte=now, end_date__gte=now).first()
+        current_season = Season.objects.filter(club=club, is_active = True).first()
 
         # If there is no current season, return an empty dictionary
         if not current_season:
@@ -446,16 +446,18 @@ class Class(BaseModel):
         # Prepare the dictionary with all the class details
         class_dict = {}
         for c in classes:
-            class_dict[c.name] = {
+           class_dict.__setitem__(f'{c.name}',{ 
+                'ID': c.ID,
+                'name':c.name,
                 'description': c.description,
                 'teacher': c.teacher,
                 'place': c.place,
                 'price': c.price,
                 'registration_fee': c.registration_fee,
-                'start_date': c.start_date,
-                'end_date': c.end_date,
-                'start_time': c.start_time,
-                'end_time': c.end_time,
+                'start_date': c.start_date.strftime('%b %Y'),
+                'end_date': c.end_date.strftime('%b %Y'),
+                'start_time': c.start_time.strftime('%H:%M'),
+                'end_time': c.end_time.strftime('%H:%M'),
             }
-
+                                  )
         return class_dict

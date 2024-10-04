@@ -1,0 +1,42 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+<div class="mb-4" style="overflow: hidden; height: 20vh; ">
+    <!-- Set container height to 20% of viewport and hide overflow -->
+    <img src="../../../{{ club_logo_url }}" alt="{{ club_name }} logo" class="img-fluid rounded shadow-sm" style="width: 100%; object-fit: cover; opacity: 0.6; margin-top: -10%;">
+</div>
+<h4> Find an existing athlete </h4>
+<p>
+    Insert your ID to show saved contact information and class submission details
+</p>
+<!-- Error Message -->
+    {% if error_message %}
+<div class="alert alert-danger" role="alert">
+    {{ error_message }}
+</div>
+    {% endif %}
+
+<!-- Search Form -->
+<form method="GET" action="" class="form-inline justify-content-center">
+    <div class="form-group mb-3">
+        <table style="width: 100%; border-spacing: 15px 10px;">
+            <tr>
+                <td style="padding: 10px; background-color: #f9f9f9; border-radius: 8px;">
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; background-color: #f9f9f9; border-radius: 8px;">
+                    <label for="athlete_id" class="sr-only">Athlete ID</label>
+                    <input type="text" class="form-control" id="athlete_id" name="athlete_id" placeholder="Enter Athlete ID" required>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; background-color: #f9f9f9; border-radius: 8px;">
+                    <button type="submit" class="btn btn-primary">Find Athlete</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+{% endblock %}
