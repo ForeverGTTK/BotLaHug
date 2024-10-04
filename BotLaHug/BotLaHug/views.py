@@ -77,10 +77,10 @@ def home(request, club_name):
     
     features = models.Features.objects.filter(club_ID=club)
     feature_data = {feature.title:feature.get_club_fields() for feature in features}
-    if feature_data['Future']:
-        future = feature_data.pop('Future')
+    
+    future = feature_data.pop('Future', None)
+    if future:
         feature_data['Future'] = future
-
     return page_render(
         request,
         'BotLaHug/client_pages/club_home.html',

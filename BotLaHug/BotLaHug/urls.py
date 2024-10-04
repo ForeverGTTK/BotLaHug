@@ -13,39 +13,43 @@ from app import views as btlviews
 from BotLaHug import views as clubViews
 
 urlpatterns = [
-    #club views    
-    path('club/<str:club_name>/',clubViews.home),
-    path('club/<str:club_name>/articles/<str:article_ID>',clubViews.article),
-    #athlete club views
-    path('club/<str:club_name>/athlete/<str:athlete_id>',clubViews.athlete_profile,name='athlete_profile'),
-    path('club/<str:club_name>/athlete/',clubViews.find_athlete ,name='find_athlete'),
-    path('club/<str:club_name>/athletes/',clubViews.club_athletes),
+    # club views    
+    path('club/<str:club_name>/', clubViews.home, name='club_home'), 
+    path('club/<str:club_name>/articles/<str:article_ID>/', clubViews.article, name='article_detail'), 
     
-    #classes club views
-     path('club/<str:club_name>/classes/', clubViews.club_classes, name='club_classes'),
-     
-    # more class views
-    path('club/<str:club_name>/contact/',clubViews.contact),
- 
+    # athlete club views
+    path('club/<str:club_name>/athlete/<str:athlete_id>/', clubViews.athlete_profile, name='athlete_profile'),  
+    path('club/<str:club_name>/athlete/', clubViews.find_athlete, name='find_athlete'),
+    path('club/<str:club_name>/athletes/', clubViews.club_athletes, name='club_athletes'),
+    
+    # classes club views
+    path('club/<str:club_name>/classes/', clubViews.club_classes, name='club_classes'),  
+    
+    # more club views
+    path('club/<str:club_name>/contact/', clubViews.contact, name='club_contact'),  
+    
     # app views from btl - bot_La_hug
-    path('', btlviews.home, name='home'),
-    path('contact/', btlviews.contact, name='contact'),
-    path('about/', btlviews.about, name='about'),
-   
+    path('', btlviews.home, name='home'), 
+    path('contact/', btlviews.contact, name='contact'), 
+    path('about/', btlviews.about, name='about'), 
+    
+    # login/logout views
     path('login/',
          LoginView.as_view
          (
              template_name='app/login.html',
-             authentication_form= btlforms.BootstrapAuthenticationForm,
-             extra_context=
-             {
+             authentication_form=btlforms.BootstrapAuthenticationForm,
+             extra_context={
                  'title': 'Log in',
-                 'year' : datetime.now().year,
+                 'year': datetime.now().year,
              }
          ),
-         name='login'),
-    path('logout/', LogoutView.as_view(next_page=''), name='logout'),
+         name='login'), 
+    path('logout/', LogoutView.as_view(next_page=''), name='logout'), 
+   
+   # admin site
     path('admin/', admin.site.urls),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
