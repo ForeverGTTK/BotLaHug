@@ -17,15 +17,11 @@ from app import models
 def page_render(request,page_address,context,club_name):
     
     context.__setitem__('easterEgg',True if datetime.now().minute%2==0 else False)
-    # operations on elements to add
     app_name = re.split(r'_|(?=[A-Z])', os.path.splitext(os.path.basename(page_address))[0])
-
     if context['easterEgg']:
         title = ' '.join(word.capitalize() for word in app_name)
     else:
         title= ' '.join(word.lower() for word in app_name)
-    
-    # appending items to page context
     context.__setitem__('name',club_name)  
     context.__setitem__('title',str(title))  
     context.__setitem__('year',datetime.now().year)
@@ -43,7 +39,7 @@ def contact(request,club_name):
     assert isinstance(request, HttpRequest)
     return page_render(
         request,
-        'BotLaHug/contact.html',
+        'BotLaHug/client_pages/contact.html',
         details,
         club_name=club_name
     )
@@ -62,36 +58,38 @@ def home(request, club_name):
     
     club = get_object_or_404(models.Clubs, web_name=club_name)
     articles = models.Article.objects.filter(club=club)
-
-    # Prepare a dictionary of articles with relevant information
     club_articles = {}
     for article in articles:
         image = models.Images.objects.filter(club=club, page='Articles', name=article.title).first()
         club_articles[article.title] = {
             'ID': article.ID,
             'image': image.image.url if image else None,
-            'description': article.content[:100],  # Short description of the article
+            'description': article.content[:100],
             'publication_date': article.publication_date,
-            'web_name': article.ID  # Use article ID for URL
+            'web_name': article.ID 
             
         }
 
-    # Fetch club details
     details = club.get_club()
     classes = models.Class.get_classes_by_current_season(club=club)
     days_of_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    
     schedule_classes = generate_time_slots(classes, days_of_week)
+    
+    features = models.Features.objects.filter(club_ID=club)
+    feature_data = {feature.title:feature.get_club_fields() for feature in features}
+    if feature_data['Future']:
+        future = feature_data.pop('Future')
+        feature_data['Future'] = future
 
-    # Render the club home page with club details and articles
     return page_render(
         request,
-        'BotLaHug/club_home.html',
+        'BotLaHug/client_pages/club_home.html',
         {
             'details': details,
             'articles': club_articles,
             'schedule_classes': schedule_classes,
             'days_of_week': days_of_week,
+            'features': feature_data,
 
         },
         club_name=club_name
@@ -123,7 +121,7 @@ def article(request,club_name,article_ID):
 
     return page_render(
         request,
-        'BotLaHug/article.html',
+        'BotLaHug/client_pages/article.html',
         {
             'article_details': article_details,
             'related_articles': related_articles
@@ -147,7 +145,7 @@ def athlete_profile(request,club_name, athlete_id):
     
     return page_render(
         request, 
-        'BotLaHug/athlete_profile.html', 
+        'BotLaHug/club_pages/athlete_profile.html', 
         {'athlete': athlete},
         club_name=club_name
         )
@@ -170,7 +168,7 @@ def club_athletes(request, club_name):
     
     return page_render(
         request, 
-        'BotLaHug/club_athletes.html', 
+        'BotLaHug/club_pages/club_athletes.html', 
         {
             'club': club, 
             'athletes': athletes
@@ -210,7 +208,7 @@ def find_athlete(request, club_name):
             }
             return page_render(
                 request, 
-                'BotLaHug/find_athlete.html', 
+                'BotLaHug/client_pages/find_athlete.html', 
                 context,
                 club_name=club_name
             )
@@ -221,7 +219,7 @@ def find_athlete(request, club_name):
 
     return page_render(
         request, 
-        'BotLaHug/find_athlete.html', 
+        'BotLaHug/client_pages/find_athlete.html', 
         context,
         club_name=club_name
     )
@@ -244,7 +242,7 @@ def club_classes(request, club_name):
     
     return page_render(
         request, 
-        'BotLaHug/club_classes.html', 
+        'BotLaHug/club_pages/club_classes.html', 
         {
             'classes': classes
         },

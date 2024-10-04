@@ -60,22 +60,24 @@
     <Folder Include="BotLaHug\templates\" />
     <Folder Include="BotLaHug\templates\BotLaHug\" />
     <Folder Include="BotLaHug\templates\BotLaHug\features\" />
+    <Folder Include="BotLaHug\templates\BotLaHug\client_pages\" />
+    <Folder Include="BotLaHug\templates\BotLaHug\club_pages\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\loggedelements.html" />
     <Content Include="app\templates\app\about.html" />
     <Content Include="app\templates\app\contact.html" />
     <Content Include="app\templates\app\home.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\article.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\athlete_profile.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\club_classes.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\club_athletes.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\club_home.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\contact.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\client_pages\article.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\club_pages\athlete_profile.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\club_pages\club_classes.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\club_pages\club_athletes.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\client_pages\club_home.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\client_pages\contact.html" />
     <Content Include="BotLaHug\templates\BotLaHug\features\article_feature.html" />
     <Content Include="BotLaHug\templates\BotLaHug\features\future.html" />
     <Content Include="BotLaHug\templates\BotLaHug\features\schedule_feature.html" />
-    <Content Include="BotLaHug\templates\BotLaHug\find_athlete.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\client_pages\find_athlete.html" />
     <Content Include="BotLaHug\templates\BotLaHug\layout.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loggedelements.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loginpartial.html" />

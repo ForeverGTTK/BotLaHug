@@ -12,6 +12,7 @@ models= [
     Season,
     Athlete,
     Class,
+    Features,
 ]
 for model in models:
     admin.site.register(model)

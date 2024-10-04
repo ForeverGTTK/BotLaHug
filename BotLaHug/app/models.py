@@ -479,3 +479,62 @@ class Class(BaseModel):
                 'end_time': c.end_time.strftime('%H:%M'),
             }
         return class_dict
+    
+class Features(BaseModel):
+    """
+    A model representing additional features that a club can offer. Each feature is associated with a club 
+    and contains details such as the title, address, and price.
+
+    Fields:
+        - club_ID: A ForeignKey linking the feature to a specific club.
+        - title: The name of the feature.
+        - address: The location or description of where the feature is accessible or relevant.
+        - price: The cost associated with the feature.
+
+    Meta:
+        - ordering: Ensures features are ordered 
+    """
+    
+    club_ID = models.ForeignKey('Clubs', on_delete=models.CASCADE, related_name='features')
+    title = models.CharField(max_length=255)
+    address = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    class Meta:
+        ordering = ['-title']
+    
+    def get_club_fields(self):
+        """
+        Retrieves a dictionary of feature fields, excluding the price. 
+        This method is intended for client use to avoid exposing sensitive data such as the price.
+
+        Returns:
+            dict: A dictionary containing 'club_ID', 'title', and 'address'.
+        """
+        return {
+            'club_ID': str(self.club_ID),  # Convert the club ID to a string for easier use in templates.
+            'title': self.title,
+            'address': self.address,
+        }
+
+    def get_club_price(self):
+        """
+        Retrieves all fields of the feature, including the price. 
+        This method is for internal use, where full details (including the price) are needed.
+
+        Returns:
+            dict: A dictionary containing 'club_ID', 'title', 'address', and 'price'.
+        """
+        return {
+            **self.get_club_fields(),  # Include the fields returned by `get_club_fields`.
+            'price': self.price,  # Add the price to the dictionary.
+        }
+
+    def __str__(self):
+        """
+        Returns a string representation of the feature, displaying the title and associated club ID.
+        
+        Returns:
+            str: A formatted string showing the feature's title and its associated club ID.
+        """
+        return f"{self.title} - {self.club_ID}"
