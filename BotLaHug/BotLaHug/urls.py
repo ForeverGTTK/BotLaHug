@@ -15,10 +15,10 @@ from BotLaHug import views as clubViews
 urlpatterns = [
     # club views    
     path('club/<str:club_name>/', clubViews.home, name='club_home'), 
-    path('club/<str:club_name>/articles/<str:article_ID>/', clubViews.article, name='article_detail'), 
+    path('club/<str:club_name>/articles/<str:article_ID>', clubViews.article, name='article_detail'), 
     
     # athlete club views
-    path('club/<str:club_name>/athlete/<str:athlete_id>/', clubViews.athlete_profile, name='athlete_profile'),  
+    path('club/<str:club_name>/athlete/<str:athlete_id>', clubViews.athlete_profile, name='athlete_profile'),  
     path('club/<str:club_name>/athlete/', clubViews.find_athlete, name='find_athlete'),
     path('club/<str:club_name>/athletes/', clubViews.club_athletes, name='club_athletes'),
     

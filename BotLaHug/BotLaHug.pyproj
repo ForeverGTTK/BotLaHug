@@ -75,6 +75,7 @@
     <Content Include="BotLaHug\templates\BotLaHug\client_pages\club_home.html" />
     <Content Include="BotLaHug\templates\BotLaHug\client_pages\contact.html" />
     <Content Include="BotLaHug\templates\BotLaHug\features\article_feature.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\features\defult_adv.html" />
     <Content Include="BotLaHug\templates\BotLaHug\features\future.html" />
     <Content Include="BotLaHug\templates\BotLaHug\features\schedule_feature.html" />
     <Content Include="BotLaHug\templates\BotLaHug\client_pages\find_athlete.html" />

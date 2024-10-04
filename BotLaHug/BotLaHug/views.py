@@ -14,23 +14,36 @@ from app import models
 
 
 
-def page_render(request,page_address,context,club_name):
-    
-    context.__setitem__('easterEgg',True if datetime.now().minute%2==0 else False)
-    app_name = re.split(r'_|(?=[A-Z])', os.path.splitext(os.path.basename(page_address))[0])
-    if context['easterEgg']:
-        title = ' '.join(word.capitalize() for word in app_name)
-    else:
-        title= ' '.join(word.lower() for word in app_name)
-    context.__setitem__('name',club_name)  
-    context.__setitem__('title',str(title))  
-    context.__setitem__('year',datetime.now().year)
+def page_render(request, page_address, context, club_name):
+    """
+    Renders a page with updated context data, including a dynamically generated title and an optional 'easterEgg' feature.
 
-    return render(
-        request,
-        page_address,
-        context
-        )
+    Args:
+        request (HttpRequest): The HTTP request object.
+        page_address (str): Path to the template file.
+        context (dict): Context data to be passed to the template.
+        club_name (str): Name of the club, added to the context.
+
+  
+    Returns:
+        HttpResponse: The rendered page with the updated context.
+
+  """
+    context['easterEgg'] = datetime.now().minute % 2 == 0
+    
+    app_name = re.split(r'_|(?=[A-Z])', os.path.splitext(os.path.basename(page_address))[0])
+    title = ' '.join(word.capitalize() if context['easterEgg'] else word.lower() for word in app_name)
+    
+    context.update(
+        {
+            'name': club_name, 
+            'title': title, 
+            'year': datetime.now().year, 
+        }
+    )
+    
+    return render(request, page_address, context)
+
 
 def contact(request,club_name):
     """Renders the club contact page."""

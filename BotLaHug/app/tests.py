@@ -120,9 +120,9 @@ class ViewsTest(TestCase):
         """
         athlete = Athlete.objects.create(athlete_id="12345", club=self.club, first_name="John", last_name="Doe", dob="2000-01-01")
         response = self.client.get(reverse('find_athlete', kwargs={'club_name': self.club.web_name}), {
-            'athlete_id': athlete.athlete_id  # Pass a valid athlete ID
+            'athlete_id': athlete.athlete_id  
         })
-        self.assertEqual(response.status_code, 302)  # Redirect to athlete profile if found
+        self.assertEqual(response.status_code, 302)  
 
     def test_club_classes_view(self):
         """
@@ -151,7 +151,6 @@ class ClubsModelTest(TestCase):
             contact_person="John Doe"
         )
         
-        # Create a topic relation
         self.topic_relation = topic_relations.objects.create(
             topic=self.topic,
             club_ID=self.club
@@ -199,24 +198,25 @@ class FeaturesModelTest(TestCase):
         # Create a feature
         self.feature = Features.objects.create(
             club_ID=self.club,
-            title="Recording Studio",
-            address="Building A, Room 2",
+            title="Future",
+            address="BotLaHug/client_pages/future.html",
             price=500
         )
+        
 
     def test_feature_creation(self):
         """
         Test if the Feature instance is created successfully.
         """
-        self.assertEqual(self.feature.title, "Recording Studio")
+        self.assertEqual(self.feature.title, "Future")
         self.assertEqual(self.feature.price, 500)
-        self.assertEqual(self.feature.address, "Building A, Room 2")
+        self.assertEqual(self.feature.address, "BotLaHug/client_pages/future.html")
 
-    def test_get_club_fields(self):
+    def test_get_club_price(self):
         """
         Test the get_club_fields method of the Features model.
         """
         fields = self.feature.get_club_fields()
-        self.assertEqual(fields['title'], "Recording Studio")
-        self.assertEqual(fields['address'], "Building A, Room 2")
+        self.assertEqual(fields['title'], "Future")
+        self.assertEqual(fields['address'], "BotLaHug/client_pages/future.html")
         self.assertNotIn('price', fields)
