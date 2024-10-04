@@ -59,6 +59,7 @@
     <Folder Include="BotLaHug\" />
     <Folder Include="BotLaHug\templates\" />
     <Folder Include="BotLaHug\templates\BotLaHug\" />
+    <Folder Include="BotLaHug\templates\BotLaHug\features\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\loggedelements.html" />
@@ -71,6 +72,9 @@
     <Content Include="BotLaHug\templates\BotLaHug\club_athletes.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_home.html" />
     <Content Include="BotLaHug\templates\BotLaHug\contact.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\features\article_feature.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\features\future.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\features\schedule_feature.html" />
     <Content Include="BotLaHug\templates\BotLaHug\find_athlete.html" />
     <Content Include="BotLaHug\templates\BotLaHug\layout.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loggedelements.html" />

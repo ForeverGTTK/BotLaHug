@@ -2,30 +2,35 @@
 
 {% block content %}
 
-    {% for topic, clubs in sorted_clubs.items%}
-
-<div class="jumbotron">
-
-    <h1>{{ topic }}</h1>
-    <tr>
-        {% for club_name, details in clubs.items %}
-        <td>
-            <h2>{{ club_name }}</h2>
-            <p class="lead">{{ details.description }}</p>
-            <p>
-                <a href="club/{{ details.web_name }}/">
-                    <img src="{{ details.photo.image }}" alt="{{ club_name }} logo" class="club-logo img-fluid">
-                    <p>{{details.photo.description}}</p>
-                    <br>{{ club_name }} &raquo;
-                </a>
-            </p>
-        </td>
-        {% if forloop.counter|divisibleby:3 %}
-    </tr><tr>
-        {% endif %}
-        {% endfor %}
-    </tr>
-</div>
+<div class="container mt-5">
+    <!-- Loop through topics -->
+    {% for topic, details_n_clubs in clubs.items %}
+    <div class="mb-5">
+        <h1 class="display-4 text-center mb-4">
+            {{ topic }}
+            <small class="text-muted"> - {{ details_n_clubs.description }}</small>
+        </h1>
+        <div class="row">
+            {% for club_name, details in details_n_clubs.club.items %}
+            <div class="col-md-4 mb-4">
+                <!-- Club Card -->
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ details.photo.image }}" alt="{{ club_name }} logo" class="card-img-top img-fluid" style="height: 40%; object-fit: fit;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ club_name }}</h5>
+                        <p class="card-text">{{ details.description }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="club/{{ details.web_name }}/" class="btn btn-primary">
+                            Visit {{ club_name }} &raquo;
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
     {% endfor %}
+</div>
 
 {% endblock %}

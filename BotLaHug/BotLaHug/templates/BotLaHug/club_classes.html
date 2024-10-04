@@ -13,6 +13,7 @@
                 <th>Class Name</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Days</th>
                 <th>Start Time</th>
                 <th>End Time</th>
                 <th>Place</th>
@@ -28,12 +29,17 @@
                 <td>{{ cname }}</td>
                 <td>{{ class.start_date }}</td>
                 <td>{{ class.end_date }}</td>
+                <td>{{ class.days }}</td>
                 <td>{{ class.start_time }}</td>
                 <td>{{ class.end_time }}</td>
                 <td>{{ class.place }}</td>
                 <td>{{ class.teacher }}</td>
-                <td>{{ class.price }}</td>
-                <td>{{ class.registration_fee }}</td>
+                <td>
+                    {{ class.price }}&#8362;
+                </td>
+                <td>
+                    {{ class.registration_fee }}&#8362;
+                </td>
             </tr>
             {% endfor %}
         </tbody>

@@ -1,0 +1,27 @@
+<div class="col-md-12">
+    <h2 class="mb-4">Articles</h2>
+    <div class="list-group">
+        {% for article_title, article_info in articles.items %}
+        <a href="articles/{{ article_info.ID }}" class="list-group-item list-group-item-action">
+            <table>
+                <tr>
+
+                    {% if article_info.image %}
+                    <td style="padding:5px">
+                        <img src="{{ article_info.image }}" alt="{{ article_info.description }}" class="img-fluid">
+                    </td>
+                    {% endif %}
+                    <td style="padding:5px">
+                        <h3 class="mb-1">{{ article_title }}</h3>
+                        <p>{{ article_info.description }}</p>
+                        <small>Published on {{ article_info.publication_date|date:"F j, Y" }}</small>
+
+                    </td>
+                </tr>
+            </table>
+        </a>
+        {% empty %}
+        <p>No articles found for this club.</p>
+        {% endfor %}
+    </div>
+</div>

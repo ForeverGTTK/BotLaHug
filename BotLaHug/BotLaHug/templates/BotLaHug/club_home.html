@@ -1,5 +1,17 @@
 {% extends "BotLaHug/layout.html" %}
+<style>
+    .schedule-table {
+        width: 100%;
+        text-align: center;
+    }
 
+    .class-box {
+        padding: 10px;
+        color: white;
+        margin-bottom: 5px;
+        border-radius: 5px;
+    }
+</style>
 {% block content %}
 <div class="mb-4" style="overflow: hidden; height: 20vh; ">
     <!-- Set container height to 20% of viewport and hide overflow -->
@@ -15,46 +27,21 @@
         </div>
     </div>
 
-    <!-- Articles Section -->
+    <!-- Schedule Section -->
     <div class="row mt-5">
-        <div class="col-md-12">
-            <h2 class="mb-4">Articles</h2>
-            <div class="list-group">
-                {% for article_title, article_info in articles.items %}
-                <a href="articles/{{ article_info.ID }}" class="list-group-item list-group-item-action">
-                    <table>
-                        <tr>
-
-                            {% if article_info.image %}
-                            <td style="padding:5px">
-                                <img src="{{ article_info.image }}" alt="{{ article_info.description }}" class="img-fluid">
-                            </td>
-                            {% endif %}
-                            <td style="padding:5px">
-                                <h3 class="mb-1">{{ article_title }}</h3>
-                                <p>{{ article_info.description }}</p>
-                                <small>Published on {{ article_info.publication_date|date:"F j, Y" }}</small>
-
-                            </td>
-                        </tr>
-                    </table>
-                </a>
-                {% empty %}
-                <p>No articles found for this club.</p>
-                {% endfor %}
-            </div>
-        </div>
+        {% include 'BotLaHug/features/schedule_feature.html' %}
     </div>
 
-    <!-- Empty Div for Future Development -->
+    <!-- Articles Section -->
     <div class="row mt-5">
-        <div class="col-md-12">
-            <div id="future-development" class="border p-4 text-center">
-                <h4>More features coming soon!</h4>
-                <p>Stay tuned for future development!</p>
-            </div>
-        </div>
+        {%include 'BotLaHug/features/article_feature.html'%}
+    </div>
+
+    <!-- more features Section -->
+    <div class="row mt-5">
+        {% include 'BotLaHug/features/future.html'%}
     </div>
 </div>
 
-{% endblock %}
+
+    {% endblock %}

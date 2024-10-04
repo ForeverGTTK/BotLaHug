@@ -93,17 +93,32 @@ class Topics(BaseModel):
     """
     
     name = models.TextField(null=True, blank=True, unique=True)
+    class Meta:
+        ordering = ['-name']
+        
+  
     
+    def dict_topics(topic_list):
+        topic_dict= {}
+        for topic in topic_list:
+            topic_dict[topic.name] = topic.description
+        return topic_dict
+
     def get_club_topics(club_id):
         """
         Fetches all topics associated with a particular club.
         """
-        return topic_relations.objects.filter(club_ID=club_id).values_list('topic', flat=True)
-
+        topic_rel = topic_relations.objects.filter(club_ID=club_id)
+        topics = []
+        for rel in topic_rel:
+            topics.append(Topics.objects.get(ID = rel.topic))
+        return Topics.dict_topics(topics)
+    
     def get_topic_clubs(topic_name):
         """
         Fetches all clubs associated with a particular topic.
         """
+        
         return topic_relations.objects.filter(topic__name=topic_name)
 
     def __str__(self):
@@ -134,7 +149,7 @@ class Clubs(BaseModel):
     contact_phone = models.CharField(max_length=15, null=True, blank=True)  # Assuming international phone numbers
     contact_person = models.CharField(max_length=255, null=True, blank=True)
     
-    def get_clubs():
+    def get_clubs_by_topic():
         """
         Returns a dictionary where the key is the club name and the value is a dictionary containing the photo URL, description, and web_name of each club associated with this topic.
         """
@@ -156,7 +171,10 @@ class Clubs(BaseModel):
                     'description': club.description,
                     'web_name': club.web_name
                 }
-            sorted_clubs[topic.name] = clubs
+            sorted_clubs[topic.name] = {
+                'club':clubs,
+                'description':topic.description,
+                }
         return sorted_clubs
 
     def get_club(self):
@@ -446,18 +464,18 @@ class Class(BaseModel):
         # Prepare the dictionary with all the class details
         class_dict = {}
         for c in classes:
-           class_dict.__setitem__(f'{c.name}',{ 
+           class_dict[f'{c.name}']={ 
                 'ID': c.ID,
                 'name':c.name,
                 'description': c.description,
                 'teacher': c.teacher,
                 'place': c.place,
                 'price': c.price,
+                'days':c.days_of_week,
                 'registration_fee': c.registration_fee,
                 'start_date': c.start_date.strftime('%b %Y'),
                 'end_date': c.end_date.strftime('%b %Y'),
                 'start_time': c.start_time.strftime('%H:%M'),
                 'end_time': c.end_time.strftime('%H:%M'),
             }
-                                  )
         return class_dict

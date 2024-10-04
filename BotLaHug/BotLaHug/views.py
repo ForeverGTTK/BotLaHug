@@ -4,11 +4,12 @@ views of bot lahug application clubs views
 
 
 import os,re
-from datetime import datetime, timedelta
+from datetime import time, datetime, timedelta, date  
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, JsonResponse
 from django.db.models import Count
+from collections import defaultdict
 from app import models
 
 
@@ -72,10 +73,15 @@ def home(request, club_name):
             'description': article.content[:100],  # Short description of the article
             'publication_date': article.publication_date,
             'web_name': article.ID  # Use article ID for URL
+            
         }
 
     # Fetch club details
     details = club.get_club()
+    classes = models.Class.get_classes_by_current_season(club=club)
+    days_of_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    
+    schedule_classes = generate_time_slots(classes, days_of_week)
 
     # Render the club home page with club details and articles
     return page_render(
@@ -83,7 +89,10 @@ def home(request, club_name):
         'BotLaHug/club_home.html',
         {
             'details': details,
-            'articles': club_articles
+            'articles': club_articles,
+            'schedule_classes': schedule_classes,
+            'days_of_week': days_of_week,
+
         },
         club_name=club_name
     )
@@ -241,3 +250,36 @@ def club_classes(request, club_name):
         },
         club_name=club_name
     )
+
+
+def generate_time_slots(classes, days_of_week):
+    """
+    Generates a dictionary of time slots for each day of the week based on the class schedule.
+
+    Args:
+        classes (QuerySet): A list of class objects containing the schedule.
+        days_of_week (list): A list of days (Monday, Tuesday, etc.).
+
+    Returns:
+        dict: A dictionary where the keys are time slots and values are lists of classes per day.
+    """
+    from collections import defaultdict
+    time_slots = defaultdict(lambda: {day: [] for day in days_of_week})
+
+    for pk, class_info in classes.items():
+        start_time = class_info['start_time']
+        end_time = class_info['end_time']
+        days = class_info['days']
+
+     
+        for day in days:
+            day_name = dict(models.Class.DAYS_OF_WEEK)[day]
+            time_slots[f'{start_time}-{end_time}'][day_name].append({
+                'name': class_info['name'],
+                'teacher': class_info['teacher'],
+                'time': f'{start_time} - {end_time}',
+                'place': class_info['place'],
+                'color': 'red',  # You can customize the color logic
+            })
+
+    return dict(time_slots)
