@@ -1,0 +1,40 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+<div class="mb-4" style="overflow: hidden; height: 25vh; ">
+    <img src="../../../../{{class_details.club_logo_url }}" alt="{{ club_name }} logo" class="img-fluid rounded shadow-sm" style="width: 100%; object-fit: cover; opacity: 0.6; margin-top: -10%;">
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+
+        <div class="col-md-8">
+            <h1 class="display-4">{{ class_details.name }}</h1>
+            <p class="lead text-muted">Class ID: {{ class_details.ID }}</p>
+
+            <ul class="list-group mb-4">
+                <li class="list-group-item"><strong>Season:</strong> {{ class_details.season }}</li>
+                <li class="list-group-item"><strong>Schedule:</strong> {{ class_details.start_date }} - {{ class_details.end_date }}</li>
+                <li class="list-group-item"><strong>Days:</strong> {{ class_details.days_of_week }}</li>
+                <li class="list-group-item"><strong>Time:</strong> {{ class_details.start_time }} - {{ class_details.end_time }}</li>
+                <li class="list-group-item"><strong>Teacher:</strong> {{ class_details.teacher }}</li>
+                <li class="list-group-item"><strong>Location:</strong> {{ class_details.place }}</li>
+                <li class="list-group-item"><strong>Monthly Cost:</strong> {{ class_details.price }} &#8362;</li>
+                <li class="list-group-item"><strong>Registration Fee:</strong> {{ class_details.registration_fee }} &#8362;</li>
+            </ul>
+        </div>
+    </div>
+</div>
+            {% endblock %}
+
+            {% block sidebar %}
+<!-- Tools Section -->
+<h4>Class Tools</h4>
+<ul class="list-group mb-4">
+    <li class="list-group-item"><a href="#">{{ tools.edit }}</a></li>
+    <li class="list-group-item"><a href="#">{{ tools.register }}</a></li>
+    <li class="list-group-item"><a href="#">{{ tools.manage }}</a></li>
+</ul>
+
+
+{% endblock %}

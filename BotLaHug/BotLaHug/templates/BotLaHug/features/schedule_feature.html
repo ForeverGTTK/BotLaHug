@@ -16,7 +16,7 @@
             <td>
                 {% for class_info in classes %}
                 {% if class_info %}
-                <a href="" style="text-decoration: none;">
+                <a href="/club/{{name}}/class/{{class_info.ID}}" style="text-decoration: none;">
                     <div class="class-box" style="background-color: {{ class_info.color }};">
                         <h4>{{ class_info.name }}</h4>
                         <p>

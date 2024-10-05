@@ -117,7 +117,7 @@
                     <a class="nav-link" href="/club/{{name}}/contact/">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/about/">about</a>
+                    <a class="nav-link" href="/club/{{name}}/about/">about</a>
                 </li>
                 {% include 'BotLaHug/loginpartial.html' %}
             </ul>
@@ -136,8 +136,10 @@
         <div>
             {% block adv %}
             <!-- future development of ads -->
-            {% if True %}
+            {% if user.is_authenticated %}
             {% include 'BotLaHug/features/defult_adv.html' %}
+            {% else %}
+            
             {% endif %}
 
             {% endblock %}

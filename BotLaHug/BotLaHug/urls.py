@@ -24,9 +24,14 @@ urlpatterns = [
     
     # classes club views
     path('club/<str:club_name>/classes/', clubViews.club_classes, name='club_classes'),  
-    
+    path('club/<str:club_name>/class/<str:class_id>', clubViews.class_info, name='class_info'),  
+    path('club/<str:club_name>/class/view/<str:class_id>', clubViews.club_class_info, name='club_class_info'),
+
+
     # more club views
-    path('club/<str:club_name>/contact/', clubViews.contact, name='club_contact'),  
+    path('club/<str:club_name>/contact/', clubViews.contact, name='club_contact'),
+    path('club/<str:club_name>/about/', clubViews.about, name='club_about'),  
+
     
     # app views from btl - bot_La_hug
     path('', btlviews.home, name='home'), 

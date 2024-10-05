@@ -1,130 +1,107 @@
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BotLaHug Club Management System</title>
-    <style type="text/css">
+    <style>
         body {
-            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
-            font-weight: 200;
-            font-size: 11pt;
-        }
-
-        p, h1, h2 {
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-weight: 300;
+            font-size: 12pt;
         }
 
         h1 {
-            font-size: 20pt;
+            font-size: 22pt;
             font-weight: bold;
-            padding-top: 1em;
         }
 
-            h1.top {
-                padding-top: 0em;
-            }
-
         h2 {
-            font-size: 16pt;
-            font-weight: 300;
-            padding-top: 0.5em;
-            padding-left: 0em;
+            font-size: 18pt;
+            margin-top: 1em;
         }
 
         p {
-            padding-left: 0.5em;
-            padding-bottom: 0.5em;
+            margin: 1em 0;
         }
 
-            p.hint {
-                color: #666666;
-            }
+        ul {
+            margin: 1em 0;
+            padding-left: 1.5em;
+        }
+
+        li {
+            margin-bottom: 0.5em;
+        }
 
         code {
-            font-family: Consolas, 'Lucida Console', monospace;
+            background-color: #f0f0f0;
+            padding: 0.2em;
         }
 
-        ol {
-            margin-top: 0;
-            padding-top: 0;
+        .hint {
+            color: #666;
         }
-
-            ol > li {
-                padding-top: 1.5em;
-            }
     </style>
 </head>
 <body>
-    <h1 class="top">Welcome to BotLaHug</h1>
+    <h1>Welcome to BotLaHug</h1>
     <p>
-        BotLaHug is a comprehensive club management system designed to allow multiple clubs to register, manage athletes, organize seasons, and maintain their own customized webpages. The platform simplifies the process of managing athlete and club data, offering an easy-to-use interface for both administrators and club managers.
+        <strong>BotLaHug</strong> is an innovative club management system designed to cater to the unique needs of multiple clubs. It allows clubs to register and create custom webpages, manage their athletes, schedule classes, and track seasonal participation. With a user-friendly interface, BotLaHug streamlines club management, helping administrators and managers save time and focus on what matters most — the club members and activities.
     </p>
-
 
     <h1>Key Features</h1>
-    <p>
-        BotLaHug offers the following essential functionalities:
-    </p>
     <ul>
-        <li><strong>Club Registration:</strong> Clubs can sign up and manage their own unique webpage, complete with custom details and media.</li>
-        <li><strong>Athlete Management:</strong> Clubs can register and manage athletes, track their participation, and store relevant data.</li>
-        <li><strong>Season Management:</strong> Clubs can create and manage seasons, associating athletes with different seasons for competitions and events.</li>
-        <li><strong>Basic Payment System:</strong> For demonstration purposes, a made-up payment system is integrated, providing placeholders for more advanced features.</li>
+        <li><strong>Multi-Club Registration:</strong> Each club can create and manage its own personalized webpage, complete with unique details, images, and design elements.</li>
+        <li><strong>Athlete & Class Management:</strong> Clubs can register athletes, organize classes, and manage athletes' participation in classes. They can also keep records of athlete details such as contact info, year of joining, and profile pictures.</li>
+        <li><strong>Season Tracking:</strong> Clubs can create seasons, enroll athletes in specific seasons, and monitor their engagement.</li>
+        <li><strong>Integrated Payment System:</strong> Although a basic placeholder for now, BotLaHug includes a payment system that can be extended to integrate real-world payment gateways and manage financial records for athlete participation.</li>
     </ul>
 
-    <h1>What's Next?</h1>
+    <h1>What’s Next?</h1>
     <p>
-        Future developments will expand on BotLaHug’s capabilities, including:
+        The following features are on the roadmap for BotLaHug:
     </p>
     <ul>
-        <li><strong>Customized Designs for Clubs:</strong> Each club will be able to further personalize its website design, including color schemes and layout adjustments.</li>
-        <li><strong>Competition Management:</strong> Additional models and features to manage competitions and track results.</li>
-        <li><strong>Payment Integration:</strong> Adding support for various online payment methods, including קבלות ואפשרויות סליקת אשראי ותשלום מקוון (credit card processing and online payment receipts).</li>
+        <li><strong>Club-Specific Customizations:</strong> Clubs will be able to fully customize their webpage design, including colors, fonts, and layouts, offering them a branded and unique online presence.</li>
+        <li><strong>Advanced Competition Management:</strong> New tools will be added for clubs to create and manage competitions, track scores, and monitor athlete performance in real-time.</li>
+        <li><strong>Enhanced Payment System:</strong> BotLaHug will support various online payment methods, including integration for credit card processing, and the option to generate receipts for payments.</li>
     </ul>
-
-    <p>
-        Stay tuned for updates and new features that will enhance the functionality and flexibility of the platform!
-    </p>
 
     <h1>Getting Started</h1>
     <p>
-        To get started with BotLaHug, follow these steps to download the repository and set up the application on your local machine.
+        Follow the steps below to set up BotLaHug on your local machine and start managing clubs right away.
     </p>
 
     <h2>Steps to Get Started</h2>
     <ol>
         <li>
-            <strong>Install Git (if you don't have it installed):</strong>
-            <p>Download and install Git from <a href="https://git-scm.com">https://git-scm.com</a>. Follow the setup instructions for your operating system.</p>
+            <strong>Install Git:</strong> Download and install Git from <a href="https://git-scm.com">https://git-scm.com</a>. Follow the installation guide for your operating system.
         </li>
-
         <li>
-            <strong>Clone the repository from GitHub:</strong>
-            <p>Open a terminal or command prompt, navigate to the folder where you want to store the project, and run:</p>
-            <p><code>git clone https://github.com/username/botlahug.git</code></p>
-            <p>Replace <code>username</code> with the actual GitHub username. This command will download the project files from the repository.</p>
+            <strong>Clone the BotLaHug repository:</strong> Open a terminal or command prompt, navigate to the folder where you want to store the project, and run:
+            <br><code>git clone https://github.com/username/botlahug.git</code>
         </li>
-
         <li>
-            <strong>Navigate to the project directory:</strong>
-            <p>Change into the project’s directory using:</p>
-            <p><code>cd botlahug</code></p>
+            <strong>Navigate to the project directory:</strong> Use the command <code>cd botlahug</code> to enter the project folder.
         </li>
-
         <li>
-            <strong>Install the dependencies:</strong>
-            <p>For Python projects, use pip to install the required packages by running:</p>
-            <p><code>pip install -r requirements.txt</code></p>
+            <strong>Install dependencies:</strong> Run <code>pip install -r requirements.txt</code> to install the necessary Python packages.
         </li>
-
         <li>
-            <strong>Run the development server:</strong>
-            <p>Start the local server with the following command:</p>
-            <p><code>python manage.py runserver</code></p>
-            <p>Open your browser and navigate to <code>http://127.0.0.1:8000</code> to explore the application.</p>
+            <strong>Start the development server:</strong> Run <code>python manage.py runserver</code> to start the server. You can then open a browser and go to <code>http://127.0.0.1:8000</code> to start exploring the app.
         </li>
     </ol>
 
-
+    <h1>To Be Continued...</h1>
+    <p>Here are the upcoming tasks marked with 'X' that are being developed:</p>
+    <ul>
+        <li><strong>Two-Factor Authentication (2FA):</strong> Enhance account security with an optional 2FA setup, allowing users to add an extra layer of protection using email or SMS verification during login (X).</li>
+        <li><strong>Athlete Progress Tracking:</strong> Introduce tools for tracking and visualizing athletes' progress over time, including performance statistics, milestones, and skill improvements (X).</li>
+        <li><strong>Payment API Integration:</strong> Work on adding real-world payment gateway support for online transactions (X).</li>
+        <li><strong>Advanced statistics dashboard:</strong> Creating a dashboard that will provide in-depth insights into athlete and club performance (X).</li>
+        <li><strong>Automated email notifications:</strong> Set up automated email reminders for upcoming classes, events, or payments (X).</li>
+    </ul>
+    <p>Stay tuned as these features get integrated and enhance the BotLaHug experience!</p>
 </body>
 </html>

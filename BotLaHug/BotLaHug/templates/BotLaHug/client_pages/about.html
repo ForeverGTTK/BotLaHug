@@ -1,0 +1,66 @@
+                               {% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Club Name and Description -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1 class="display-4">{{ club.name }}</h1>
+            <p class="lead">Welcome to {{ club.name }}! Your journey with us began on {{ club.created_at|date:"F d, Y" }}. We're dedicated to offering top-notch experiences and management services for all of our athletes and staff.</p>
+        </div>
+    </div>
+
+    <!-- Club Stats -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h3>About This Season</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Season Number:</strong> {{ season_count }}</li>
+                <li class="list-group-item"><strong>Number of Classes:</strong> {{ class_count }}</li>
+                <li class="list-group-item"><strong>Total Athletes:</strong> {{ athlete_count }}</li>
+                <li class="list-group-item"><strong>Average Training Sessions per Week:</strong> {{ average_training_per_week }}</li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Club Highlights</h3>
+            <p>
+                Since joining BotLaHug, {{ club.name }} has grown to include multiple classes, with dedicated athletes who train weekly. Our current season, {{ current_season.name }}, is shaping up to be one of our best yet. The club is located in {{ club.location }} and led by {{ club.contact_person }}, who ensures everything runs smoothly.
+            </p>
+        </div>
+    </div>
+
+    <!-- Classes Info -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h3>Current Classes</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Teacher</th>
+                        <th>Schedule</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class in classes %}
+                    <tr>
+                        <td>{{ class.name }}</td>
+                        <td>{{ class.teacher }}</td>
+                        <td>{{ class.start_time }} - {{ class.end_time }} on {{ class.days_of_week }}</td>
+                        <td>{{ class.price }} &#8362;</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No classes available for the current season.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -13,6 +13,7 @@ models= [
     Athlete,
     Class,
     Features,
+    Registration,
 ]
 for model in models:
     admin.site.register(model)

@@ -44,6 +44,31 @@ def page_render(request, page_address, context, club_name):
     
     return render(request, page_address, context)
 
+def about(request, club_name):
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    
+    # Fetch the current season
+    current_season = models.Season.objects.filter(club=club, is_active=True).first()
+    class_count = models.Class.objects.filter(season=current_season).count() if current_season else 0
+    season_count = models.Season.objects.filter(club=club).count()
+    athlete_count = models.Athlete.objects.filter(club=club).count()
+    
+    classes = models.Class.objects.filter(season=current_season) if current_season else []
+    total_classes_days = sum([len(c.days_of_week) for c in classes])
+    average_training_per_week = total_classes_days // athlete_count if athlete_count > 0 else 0
+
+    context = {
+        'club': club,
+        'current_season': current_season,
+        'class_count': class_count,
+        'season_count': season_count,
+        'athlete_count': athlete_count,
+        'average_training_per_week': average_training_per_week,
+        'classes': classes,
+    }
+    
+    return page_render(request, 'BotLaHug/client_pages/about.html', context, club_name=club_name
+)
 
 def contact(request,club_name):
     """Renders the club contact page."""
@@ -215,7 +240,7 @@ def find_athlete(request, club_name):
         except models.Athlete.DoesNotExist:
             # If the athlete is not found, render the same page with an error message
             context = {
-                'club_logo_url': club.get_club().get('photo').image.url,
+                'club_logo_url': club.get_club().get('photo'),
                 'club_name': club.name,
                 'error_message': 'Athlete not found. Please check the ID and try again.'
             }
@@ -262,6 +287,85 @@ def club_classes(request, club_name):
         club_name=club_name
     )
 
+def class_info(request, club_name, class_id):
+    """
+    Renders the class information page with all necessary details such as schedule, teacher, location, etc.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        class_id (str): The unique ID of the class.
+    
+    Returns:
+        HttpResponse: Rendered class information page.
+    """
+    club = models.Clubs.objects.get(web_name=club_name)
+    # Fetch the class based on the class_id
+    class_instance = get_object_or_404(models.Class, ID=class_id)
+    
+    # Prepare class details
+    class_details = {
+        'name': class_instance.name,
+        'season': class_instance.season,
+        'start_date': class_instance.start_date,
+        'end_date': class_instance.end_date,
+        'days_of_week': class_instance.days_of_week,
+        'start_time': class_instance.start_time.strftime('%H:%M'),
+        'end_time': class_instance.end_time.strftime('%H:%M'),
+        'teacher': class_instance.teacher,
+        'place': class_instance.place,
+        'price': class_instance.price,
+        'registration_fee': class_instance.registration_fee,
+        'club_logo_url': club.get_club().get('photo'),
+
+    }
+    
+    # Additional tools or options that might be available
+    tools = {
+        'edit': 'Edit Class Details',
+        'register': 'Register New Athlete',
+        'manage': 'Manage Class Registrations',
+    }
+    
+    return page_render(
+        request,
+        'BotLaHug/client_pages/class_info.html',
+        {
+            'class_details': class_details,
+            'tools': tools,
+        },
+        club_name=club_name
+    )
+
+def club_class_info(request, club_name, class_id):
+    """
+    Renders the class information page, displaying registered users and class details.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The name of the club.
+        class_id (str): The ID of the class.
+    
+    Returns:
+        HttpResponse: Rendered class information page with registered athletes and stats.
+    """
+    class_instance = get_object_or_404(models.Class, ID=class_id)
+    registrations = models.Registration.objects.filter(class_id=class_instance.ID)    
+    athletes = [reg.athlete for reg in registrations]
+    total_athletes = registrations.count()
+
+    context = {
+        'class_details': class_instance,
+        'total_athletes': total_athletes,
+        'athletes': athletes,
+        'club_name': club_name
+    }
+
+    return page_render(
+        request, 
+        'BotLaHug/club_pages/club_class_info.html', 
+        context,
+        club_name=club_name
+    )
 
 def generate_time_slots(classes, days_of_week):
     """
@@ -286,6 +390,7 @@ def generate_time_slots(classes, days_of_week):
         for day in days:
             day_name = dict(models.Class.DAYS_OF_WEEK)[day]
             time_slots[f'{start_time}-{end_time}'][day_name].append({
+                'ID' : class_info['ID'],
                 'name': class_info['name'],
                 'teacher': class_info['teacher'],
                 'time': f'{start_time} - {end_time}',

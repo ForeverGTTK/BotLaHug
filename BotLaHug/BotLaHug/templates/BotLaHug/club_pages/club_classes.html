@@ -24,7 +24,7 @@
         </thead>
         <tbody>
             {% for cname, class in classes.items %}
-            <tr class="clickable-row" data-href="/club/{{name}}/classes/{{class.ID}}">
+            <tr class="clickable-row" data-href="/club/{{name}}/class/view/{{class.ID}}">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ cname }}</td>
                 <td>{{ class.start_date }}</td>

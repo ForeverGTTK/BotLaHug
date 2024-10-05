@@ -433,3 +433,44 @@ class Features(BaseModel):
 
     def __str__(self):
         return f"{self.title} - {self.club_ID.name}"
+
+class Registration(BaseModel):
+    """
+    Represents the registration of an athlete for a specific class.
+
+    Fields:
+        athlete (ForeignKey to Athlete): The athlete who is registering for the class.
+        class_id (ForeignKey to Class): The class that the athlete is registering for.
+        status (CharField): The status of the athlete in the class (e.g., 'active', 'inactive').
+    """
+    
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('completed', 'Completed'),
+        ('dropped', 'Dropped'),
+    ]
+    
+    athlete = models.ForeignKey('Athlete', on_delete=models.CASCADE, related_name='registrations')
+    class_id = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='registrations')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    
+    class Meta:
+        ordering = ['-created_at']
+
+    def get_class_athlete(self):
+        """
+        Retrieves detailed information about the athlete registered for a class.
+
+        Returns:
+            dict: A dictionary with the athlete's name, date of birth, year joined, and description.
+        """
+        return {
+            'name': f'{self.athlete.first_name} {self.athlete.last_name}',
+            'dob': self.athlete.dob.strftime('%Y-%m-%d'),
+            'year_joined': self.created_at.year,
+            'description': self.athlete.description if self.athlete.description else 'No description available',
+        }
+
+    def __str__(self):
+        return f"{self.athlete.first_name} {self.athlete.last_name} registered for {self.class_id.name} - {self.status}"
