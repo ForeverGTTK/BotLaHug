@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'app',
     'BotLaHug',
+    'schema_graph',
+
     # Add your apps here to enable them
     'django.contrib.admin',
     'django.contrib.auth',

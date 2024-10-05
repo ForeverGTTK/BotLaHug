@@ -6,14 +6,47 @@ views of bot lahug application clubs views
 import os,re
 from datetime import time, datetime, timedelta, date  
 from django.shortcuts import render,redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpRequest, JsonResponse
 from django.db.models import Count
 from collections import defaultdict
 from app import models
 
 
+def is_manager(user):
+    return user.groups.filter(name='Manager').exists()
 
+def is_teacher(user):
+    return user.groups.filter(name='Teacher').exists()
+
+def is_client(user):
+    return user.groups.filter(name='Client').exists()
+
+
+# Manager-only view
+@user_passes_test(is_manager)
+@login_required
+def manager_dashboard(request):
+    # Manager-only functionality
+    context = {
+        'clubs': Clubs.objects.all(),
+        'tasks': 'Manager specific tasks here'
+    }
+    return render(request, 'BotLaHug/manager_pages/dashboard.html', context)
+
+# Teacher-only view
+@user_passes_test(is_teacher)
+@login_required
+def teacher_classes(request, club_name):
+    club = get_object_or_404(Clubs, web_name=club_name)
+    classes = Class.objects.filter(teacher=request.user)
+    
+    return page_render(
+        request, 
+        'BotLaHug/teacher_pages/teacher_classes.html', 
+        {'classes': classes},
+        club_name=club_name
+    )
 def page_render(request, page_address, context, club_name):
     """
     Renders a page with updated context data, including a dynamically generated title and an optional 'easterEgg' feature.
@@ -188,6 +221,8 @@ def athlete_profile(request,club_name, athlete_id):
         club_name=club_name
         )
 
+@login_required
+@user_passes_test(lambda user: is_manager(user) or is_teacher(user))
 def club_athletes(request, club_name):
     """
     Renders the athletes page displaying all athletes for a specific club.
@@ -240,7 +275,7 @@ def find_athlete(request, club_name):
         except models.Athlete.DoesNotExist:
             # If the athlete is not found, render the same page with an error message
             context = {
-                'club_logo_url': club.get_club().get('photo'),
+                'club_logo_url': club.get_club()['photo'],
                 'club_name': club.name,
                 'error_message': 'Athlete not found. Please check the ID and try again.'
             }
@@ -252,7 +287,7 @@ def find_athlete(request, club_name):
             )
 
     context = {
-        'club_logo_url': club.get_club().get('photo').image.url,
+        'club_logo_url': club.get_club()['photo'],
     }
 
     return page_render(

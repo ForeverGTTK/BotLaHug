@@ -99,6 +99,14 @@ class Clubs(BaseModel):
     contact_phone = models.CharField(max_length=15, null=True, blank=True)
     contact_person = models.CharField(max_length=255, null=True, blank=True)
 
+    class Meta:
+        permissions = [
+            ("view_club", "Can view club details"),
+            ("manage_club", "Can manage club details"),
+            ("manage_club_design", "Can edit club design"),
+            ("manage_club_articles", "Can manage articles for the club"),
+        ]
+        
     def get_clubs_by_topic():
         """
         Returns a dictionary where the key is the club name and the value is a dictionary containing the photo URL, description, and web_name of each club associated with this topic.
@@ -326,7 +334,7 @@ class Class(BaseModel):
         start_time (TimeField): Start time of the class.
         end_time (TimeField): End time of the class.
         place (CharField): Location of the class.
-        teacher (CharField): Name of the class instructor.
+        teacher (ForeignKey): Reference to the class instructor.
         price (DecimalField): Price of the class.
         registration_fee (DecimalField): Registration fee for the class.
     """
@@ -339,6 +347,7 @@ class Class(BaseModel):
         ('fri', 'Friday'),
         ('sat', 'Saturday'),
     )
+    
     name = models.CharField(max_length=255)
     season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name='classes')
     start_date = models.DateField()
@@ -347,7 +356,9 @@ class Class(BaseModel):
     start_time = models.TimeField()
     end_time = models.TimeField()
     place = models.CharField(max_length=255, null=True, blank=True)
-    teacher = models.CharField(max_length=255, null=True, blank=True)
+    #teacher = models.CharField(max_length=255, null=True, blank=True)
+
+    teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     registration_fee = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -405,6 +416,13 @@ class Features(BaseModel):
 
     class Meta:
         ordering = ['-title']
+        permissions = [
+            ("view_class", "Can view class"),
+            ("manage_class", "Can manage class details"),
+            ("manage_registrations", "Can manage class registrations"),
+            ("assign_teacher", "Can assign teacher to class"),
+        ]
+
 
     def get_club_fields(self):
         """
@@ -474,3 +492,59 @@ class Registration(BaseModel):
 
     def __str__(self):
         return f"{self.athlete.first_name} {self.athlete.last_name} registered for {self.class_id.name} - {self.status}"
+
+class Teacher(BaseModel):
+    """
+    Model representing a teacher.
+    
+    Fields:
+        first_name (CharField): First name of the teacher.
+        last_name (CharField): Last name of the teacher.
+        email (EmailField): Email address of the teacher.
+        phone (CharField): Phone number of the teacher.
+        biography (TextField): Short biography of the teacher.
+        profile_image (ForeignKey): Link to the teacher's profile image in the Images model.
+    """
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    biography = models.TextField(null=True, blank=True)
+    profile_image = models.ForeignKey('Images', on_delete=models.SET_NULL, null=True, related_name='teacher_images')
+
+    class Meta:
+        permissions = [
+            ("manage_teacher", "Can add, edit, or remove teachers"),
+            ("assign_classes", "Can assign classes to teachers"),
+        ]
+
+    def get_teacher_info(self):
+        """
+        Returns a dictionary containing the teacher's details.
+        """
+        return {
+            'name': f'{self.first_name} {self.last_name}',
+            'email': self.email,
+            'phone': self.phone,
+            'biography': self.biography,
+            'profile_image': self.profile_image.image.url if self.profile_image else None,
+        }
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
+class TeacherRelations(BaseModel):
+    """
+    Model representing the relationship between teachers and classes.
+    
+    Fields:
+        teacher (ForeignKey): Reference to the teacher.
+        class_id (ForeignKey): Reference to the class the teacher is associated with.
+    """
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='teacher_relations')
+    class_id = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='teacher_class_relations')
+    tuval = models.CharField(max_length=100,null=True,blank = True)
+
+    def __str__(self):
+        return f"{self.teacher} teaches {self.class_id.name}"

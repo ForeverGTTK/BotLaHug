@@ -11,6 +11,7 @@ from django.conf.urls.static import static
 from app import forms as btlforms
 from app import views as btlviews
 from BotLaHug import views as clubViews
+from schema_graph.views import Schema
 
 urlpatterns = [
     # club views    
@@ -51,7 +52,8 @@ urlpatterns = [
          ),
          name='login'), 
     path('logout/', LogoutView.as_view(next_page=''), name='logout'), 
-   
+    path("schema/", Schema.as_view()),  
+
    # admin site
     path('admin/', admin.site.urls),
 ]
