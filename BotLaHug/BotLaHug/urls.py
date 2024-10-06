@@ -25,11 +25,16 @@ urlpatterns = [
     
     # classes club views
     path('club/<str:club_name>/classes/', clubViews.club_classes, name='club_classes'),  
-    path('club/<str:club_name>/class/<str:class_id>', clubViews.class_info, name='class_info'),  
+    path('club/<str:club_name>/class/<str:class_id>', clubViews.class_info, name='class_info'),
+    path('club/<str:club_name>/class/register/', clubViews.register_athlete, name='register_athlete'),
+    path('club/<str:club_name>/class/athlete/register/<str:athlete_id>', clubViews.register_existing_athlete, name='register_existing_athlete'),  
+
     path('club/<str:club_name>/class/view/<str:class_id>', clubViews.club_class_info, name='club_class_info'),
 
+    path('/club/<str:club_name>/manage/newClass/', clubViews.manage_class, name='add_class'),
+    path('/club/<str:club_name>/manage/class/<str:class_id>', clubViews.edit_class, name='edit_class'),
 
-    # more club views
+    # more club details
     path('club/<str:club_name>/contact/', clubViews.contact, name='club_contact'),
     path('club/<str:club_name>/about/', clubViews.about, name='club_about'),  
 

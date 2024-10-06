@@ -1,4 +1,4 @@
-                                                              {% extends "BotLaHug/layout.html" %}
+{% extends "BotLaHug/layout.html" %}
 
 {% block sidebar%}
 
@@ -22,11 +22,18 @@
 
         {% block content %}
 <div class="container mt-4">
+    <div class="container md-4">
 
-    <!-- Stats Section -->
-    <h3>Statistics</h3>
-    <p>Total Registered Athletes: <strong>{{ total_athletes }}</strong></p>
+        <!-- Stats Section -->
+        <h3>Statistics</h3>
+        <p>Total Registered Athletes: <strong>{{ total_athletes }}</strong></p>
+    </div>
+    <div class="container md-4">
 
+        <a href="{% url 'edit_class' club_name=name class_id=class_details.ID %}" class="btn btn-secondary mt-3">
+            Edit Class
+        </a>
+    </div>
     <!-- Athletes Table -->
     <h4>Registered Athletes</h4>
     <table class="table table-striped">
@@ -51,4 +58,4 @@
     </table>
 
 </div>
-{% endblock %}
+    {% endblock %}

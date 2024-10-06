@@ -62,6 +62,7 @@
     <Folder Include="BotLaHug\templates\BotLaHug\features\" />
     <Folder Include="BotLaHug\templates\BotLaHug\client_pages\" />
     <Folder Include="BotLaHug\templates\BotLaHug\club_pages\" />
+    <Folder Include="BotLaHug\templates\BotLaHug\manager_pages\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\loggedelements.html" />
@@ -71,6 +72,8 @@
     <Content Include="BotLaHug\templates\BotLaHug\client_pages\about.html" />
     <Content Include="BotLaHug\templates\BotLaHug\client_pages\article.html" />
     <Content Include="BotLaHug\templates\BotLaHug\client_pages\class_info.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\client_pages\athlete_registration_form.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\client_pages\class_registration_form.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_pages\athlete_profile.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_pages\club_class_info.html" />
     <Content Include="BotLaHug\templates\BotLaHug\club_pages\club_classes.html" />
@@ -85,6 +88,7 @@
     <Content Include="BotLaHug\templates\BotLaHug\layout.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loggedelements.html" />
     <Content Include="BotLaHug\templates\BotLaHug\loginpartial.html" />
+    <Content Include="BotLaHug\templates\BotLaHug\manager_pages\class_form.html" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />

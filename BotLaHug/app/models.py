@@ -286,6 +286,7 @@ class Athlete(BaseModel):
         profile_picture (ImageField): Profile picture of the athlete.
     """
     athlete_id = models.CharField(max_length=10, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     club = models.ForeignKey('Clubs', on_delete=models.CASCADE, related_name='athletes')
     first_name = models.CharField(max_length=100, null=False, blank=False)
     last_name = models.CharField(max_length=100, null=False, blank=False)
@@ -295,7 +296,6 @@ class Athlete(BaseModel):
     parent_name = models.CharField(max_length=100, null=True, blank=True)
     parent_phone = models.CharField(max_length=10, null=True, blank=True)
     home_address = models.TextField(null=True, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
     def get_athlete(self):
         """
@@ -384,21 +384,39 @@ class Class(BaseModel):
             return {}
         
         classes = cls.objects.filter(season=current_season)
+        return { c.name:c.get_class() for c in classes }
+
+    def get_class(self):
+        """
+        Retrieves detailed information about the class.
+
+        Returns:
+            dict: A dictionary containing the class details, including:
+                - name (str): The name of the class.
+                - teacher (Teacher): The teacher assigned to the class.
+                - start_date (date): The start date of the class.
+                - end_date (date): The end date of the class.
+                - days_of_week (list): The days the class is held.
+                - start_time (time): The start time of the class.
+                - end_time (time): The end time of the class.
+                - season (Season): The season the class is associated with.
+        """
         return {
-            c.name: {
-                'ID': c.ID,
-                'name': c.name,
-                'teacher': c.teacher,
-                'place': c.place,
-                'price': c.price,
-                'registration_fee': c.registration_fee,
-                'start_time': c.start_time.strftime('%H:%M'),
-                'end_time': c.end_time.strftime('%H:%M'),
-                'days': c.days_of_week,
-            }
-            for c in classes
+            'ID': self.ID,
+            'name': self.name,
+            'teacher': self.teacher,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
+            'days_of_week': self.days_of_week,
+            'start_time': self.start_time.strftime('%H:%M'),
+            'end_time': self.end_time.strftime('%H:%M'),
+            'place':self.place if self.place else None,
+            'season': self.season,
+            'price':self.price,
+            'registration_fee':self.registration_fee,
         }
 
+        
 class Features(BaseModel):
     """
     Model representing additional features offered by a club.
@@ -464,6 +482,7 @@ class Registration(BaseModel):
     
     STATUS_CHOICES = [
         ('active', 'Active'),
+        ('new','New'),
         ('inactive', 'Inactive'),
         ('completed', 'Completed'),
         ('dropped', 'Dropped'),
@@ -475,7 +494,41 @@ class Registration(BaseModel):
     
     class Meta:
         ordering = ['-created_at']
+    
+    @staticmethod
+    def get_registration(athlete):
+        """
+        Retrieves the athlete's current and past registrations.
 
+        Args:
+            athlete (Athlete): The athlete whose registrations are to be fetched.
+
+        Returns:
+            dict: A dictionary containing the classes grouped by current season and past seasons.
+        """
+        current_season = Season.objects.filter(club=athlete.club, is_active=True).first()
+        past_seasons = Season.objects.filter(club=athlete.club).exclude(ID=current_season.ID)if current_season else Season.objects.filter(club=athlete.club)
+        current_classes = Registration.objects.filter(athlete=athlete, class_id__season=current_season) if current_season else []
+        past_classes = {}
+        for season in past_seasons:
+            past_classes[season] = Registration.objects.filter(athlete=athlete, class_id__season=season)
+
+        registration_data = {
+            'current_season': {
+                reg.class_id.name: reg.class_id.get_class() for reg in current_classes
+            } if current_classes else 'None',
+        }
+
+        # Add past seasons to the data
+        for season, classes in past_classes.items():
+            season_key = f'past_season {season.start_date.year}-{season.end_date.year}'
+            registration_data[season_key] = {
+                reg.class_id.name: reg.class_id.get_class() for reg in classes
+            } if classes else 'None'
+
+        return registration_data
+
+    
     def get_class_athlete(self):
         """
         Retrieves detailed information about the athlete registered for a class.

@@ -1,4 +1,12 @@
-              {% extends "BotLaHug/layout.html" %}
+{% extends "BotLaHug/layout.html" %}
+
+{% block sidebar %}
+<!-- Tools Section -->
+<h4>Class Tools</h4>
+<ul class="list-group mb-4">
+    <li class="list-group-item button"><a href="/club/{{ name }}/class/athlete/register/{{ athlete.athlete_id }}">Register to classes</a></li>
+</ul>
+{% endblock %}
 
 {% block content %}
 
@@ -6,11 +14,8 @@
     <div class="row">
         <div class="col-md-4">
             <!-- Athlete Profile Picture -->
-            {% if athlete.profile_picture %}
-            <img src="../../../{{ athlete.profile_picture.url }}" alt="{{ athlete.first_name }} {{ athlete.last_name }} profile" class="img-fluid rounded-circle shadow-sm">
-            {% else %}
-            <img src="/path_to_default_image/default.jpg" alt="Default profile picture" class="img-fluid rounded-circle shadow-sm">
-            {% endif %}
+            <img src="../../../{{ athlete.profile_picture }}" alt="{{ athlete.first_name }} {{ athlete.last_name }} profile" class="img-fluid rounded-circle shadow-sm">
+
         </div>
         <div class="col-md-8">
             <h1 class="display-4">{{ athlete.first_name }} {{ athlete.last_name }}</h1>
@@ -32,9 +37,28 @@
             <ul class="list-group">
                 <li class="list-group-item">{{ athlete.home_address }}</li>
             </ul>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Registered Classes</h4>
+
+            <!-- Current Season Classes -->
+            {% for headline, regist in registration_data.items %}
+            <h5>{{headline}}</h5>
+
+            <ul class="list-group mb-4">
+                {% for class_name, class_info in regist.items %}
+                <li class="list-group-item">{{ class_name }} ({{ class_info.start_date }} - {{ class_info.end_date }})</li>
+                {% endfor %}
+
+            </ul>
+
+            {% endfor %}
         </div>
     </div>
 </div>
+
 
 {% endblock %}

@@ -1,5 +1,13 @@
 {% extends "BotLaHug/layout.html" %}
 
+{% block sidebar %}
+<h4>Class options</h4>
+<ul class="list-group mb-4">
+    <li class="list-group-item"><a href="/club/{{ name }}/class/register/">register athlete to a class</a></li>
+    <li class="list-group-item"><a href="{% url 'add_class' club_name=name %}">add A new class</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 
 <div class="container mt-5">
@@ -35,10 +43,10 @@
                 <td>{{ class.place }}</td>
                 <td>{{ class.teacher }}</td>
                 <td>
-                    {{ class.price }}&#8362;
+                    {{ class.price }} &#8362;
                 </td>
                 <td>
-                    {{ class.registration_fee }}&#8362;
+                    {{ class.registration_fee }} &#8362;
                 </td>
             </tr>
             {% endfor %}

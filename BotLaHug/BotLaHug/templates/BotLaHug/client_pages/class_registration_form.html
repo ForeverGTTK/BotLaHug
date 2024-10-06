@@ -1,0 +1,28 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block sidebar %}
+<div class=" shadow-sm rounded" style="background-color: #f8f9fa; border-left: 5px solid #007bff; width:18%; height:auto; position: fixed;">
+    <h4 class="text-primary">Instructions</h4>
+    <ul class="list-unstyled">
+        <li class="mb-2"><strong>Step 1:</strong> Select an existing athlete from the dropdown list.</li>
+        <li class="mb-2"><strong>Step 2:</strong> Ensure that the class information is correct before submitting.</li>
+        <li class="mb-2"><strong>Step 3:</strong> Click <span class="text-primary">Submit</span> to register the athlete to the class.</li>
+        <li class="mt-4 text-muted">Make sure the correct athlete is selected before submitting.</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4" style="overflow: hidden; height: 25vh;">
+    <img src="../../../../../{{ club_logo }}" alt="{{ club_name }} logo" class="img-fluid rounded shadow-sm" style="width: 100%; object-fit: cover; opacity: 0.6; margin-top: -10%;">
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <h3>Register {{client.first_name}} {{client.last_name}} to Class</h3>
+    <p class="text-muted">Please select an existing Class from the dropdown and submit.</p>
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+</form>
+{% endblock %}

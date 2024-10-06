@@ -11,6 +11,8 @@ from django.http import HttpRequest, JsonResponse
 from django.db.models import Count
 from collections import defaultdict
 from app import models
+from app.forms import AthleteRegistrationForm, RegistrationForm,ExistingAthleteRegistrationForm,ClassForm
+
 
 
 def is_manager(user):
@@ -134,7 +136,7 @@ def home(request, club_name):
         image = models.Images.objects.filter(club=club, page='Articles', name=article.title).first()
         club_articles[article.title] = {
             'ID': article.ID,
-            'image': image.image.url if image else None,
+            'image': image.image if image else None,
             'description': article.content[:100],
             'publication_date': article.publication_date,
             'web_name': article.ID 
@@ -200,26 +202,23 @@ def article(request,club_name,article_ID):
         club_name=club_name
     )
 
-def athlete_profile(request,club_name, athlete_id):
-    """
-    Renders the athlete profile page with all necessary information such as profile picture, contact info, etc.
-    
-    Args:
-        request (HttpRequest): The HTTP request object.
-        athlete_id (str): The unique ID of the athlete.
-    
-    Returns:
-        HttpResponse: Rendered athlete profile page.
-    """
-    
+def athlete_profile(request, club_name, athlete_id):
     athlete = get_object_or_404(models.Athlete, ID=athlete_id)
-    
+
+    # Fetch the registration data
+    registration_data = models.Registration.get_registration(athlete)
+
+    context = {
+        'athlete': athlete,
+        'registration_data': registration_data,
+    }
+
     return page_render(
         request, 
         'BotLaHug/club_pages/athlete_profile.html', 
-        {'athlete': athlete},
+        context,
         club_name=club_name
-        )
+    )
 
 @login_required
 @user_passes_test(lambda user: is_manager(user) or is_teacher(user))
@@ -339,6 +338,7 @@ def class_info(request, club_name, class_id):
     
     # Prepare class details
     class_details = {
+        'ID': class_instance.ID,
         'name': class_instance.name,
         'season': class_instance.season,
         'start_date': class_instance.start_date,
@@ -419,7 +419,7 @@ def generate_time_slots(classes, days_of_week):
     for pk, class_info in classes.items():
         start_time = class_info['start_time']
         end_time = class_info['end_time']
-        days = class_info['days']
+        days = class_info['days_of_week']
 
      
         for day in days:
@@ -434,3 +434,131 @@ def generate_time_slots(classes, days_of_week):
             })
 
     return dict(time_slots)
+
+#------------------------------------------- Forms -------------------------------------------------
+
+def register_athlete(request, club_name, class_id=None):
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    current_season = models.Season.objects.filter(club=club, is_active=True).first()
+    class_instance = get_object_or_404(models.Class, season=current_season)
+
+
+    if request.method == 'POST':
+        athlete_form = AthleteRegistrationForm(request.POST)
+        registration_form = RegistrationForm(request.POST)
+
+        if athlete_form.is_valid() and registration_form.is_valid():
+            # Handle the athlete creation
+            athlete = athlete_form.save(commit=False)
+            athlete.created_by = request.user if request.user.is_authenticated else 'Guest'
+            athlete.description = f'{club_name} athlete, joined the club in the {current_season} season, trains in {class_instance.name} class'
+            athlete.club = club
+            athlete.save()
+
+            # Handle the registration creation
+            registration = registration_form.save(commit=False)
+            registration.created_by = request.user if request.user.is_authenticated else 'Guest'
+            registration.description = 'Form auto created registration'
+            registration.athlete = athlete
+            registration.class_id = class_instance
+            registration.status = 'New'
+            registration.save()
+
+            return redirect('athlete_profile', club_name=club_name , athlete_id = athlete.ID)
+
+    else:
+        athlete_form = AthleteRegistrationForm()
+        registration_form = RegistrationForm()
+
+    context = {
+        'athlete_form': athlete_form,
+        'registration_form': registration_form,
+        'club_name': club_name,
+        'club_logo': club.get_club().get('photo'),
+    }
+
+    return page_render(
+        request, 
+        'BotLaHug/client_pages/athlete_registration_form.html', 
+        context,
+        club_name=club_name
+    )
+
+def register_existing_athlete(request, club_name, athlete_id):
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    athlete = get_object_or_404(models.Athlete, athlete_id=athlete_id)
+
+    if request.method == 'POST':
+        form = ExistingAthleteRegistrationForm(request.POST, club=club)
+        if form.is_valid():
+            registration = form.save(commit=False)
+            registration.created_by = request.user if request.user.is_authenticated else 'Guest'
+            registration.description = 'Form auto created registration'
+            registration.athlete = athlete
+
+            # Retrieve the class the athlete is being registered for
+            class_instance = form.cleaned_data.get('class_id')
+            registration.class_id = class_instance
+
+            # Use the get_class() method to get class details
+            class_details = class_instance.get_class()
+
+            registration.status = 'New'
+            registration.save()
+
+            return redirect('athlete_profile', club_name=club_name, athlete_id=athlete.ID)
+    else:
+        form = ExistingAthleteRegistrationForm(club=club)
+
+    context = {
+        'form': form,
+        'club_name': club_name,
+        'club_logo': club.get_club().get('photo'),
+    }
+
+    return page_render(
+        request, 
+        'BotLaHug/client_pages/class_registration_form.html', 
+        context,
+        club_name=club_name
+    )
+@login_required
+@user_passes_test(is_manager)
+
+
+def edit_class(request,club_name, class_id):
+    """
+    Handles adding or editing a class for manager users.
+
+    Args:
+        request: HttpRequest object
+        class_id: Optional, if provided the form will edit an existing class.
+
+    Returns:
+        Rendered form for creating or updating a class.
+    """
+    
+    class_instance = get_object_or_404(models.Class, ID=class_id)
+    club_logo = get_object_or_404(models.Clubs, web_name=club_name).get_club()['photo']
+
+    if request.method == 'POST':
+        form = ClassForm(request.POST, instance=class_instance)
+        if form.is_valid():
+            class_obj = form.save(commit=False)
+            class_obj.created_by = request.user  # Set the current user as creator
+            class_obj.save()
+            return redirect('class_list')  # Redirect to a class list page or another relevant page
+    else:
+        form = ClassForm(instance=class_instance)
+
+    context = {
+        'form': form,
+        'is_editing': class_instance is not None,
+        'club_logo_url': club_logo,
+    }
+    return page_render(request, 'BotLaHug/manager_pages/class_form.html', context,        club_name=club_name
+ )
+
+def manage_class(request,club_name, class_id=None):
+    
+    return edit_class(request, club_name=club_name,class_id=None)
