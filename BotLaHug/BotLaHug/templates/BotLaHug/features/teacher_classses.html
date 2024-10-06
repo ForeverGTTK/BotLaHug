@@ -1,0 +1,64 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block sidebar %}
+<h4>Teacher Options</h4>
+<ul class="list-group mb-4">
+    <li class="list-group-item"><a href="{% url 'add_class' club_name=club_name %}">Add A New Class</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">{{ name }} - Classes</h1>
+
+    {% if classes %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Class Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Days</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Place</th>
+                <th>Monthly Cost</th>
+                <th>Registration Fee</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cname, class in classes.items %}
+            <tr class="clickable-row" data-href="/club/{{ club_name }}/class/view/{{ class.ID }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ cname }}</td>
+                <td>{{ class.start_date }}</td>
+                <td>{{ class.end_date }}</td>
+                <td>{{ class.days }}</td>
+                <td>{{ class.start_time }}</td>
+                <td>{{ class.end_time }}</td>
+                <td>{{ class.place }}</td>
+                <td>{{ class.price }} &#8362;</td>
+                <td>{{ class.registration_fee }} &#8362;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No classes found for this teacher.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(function (row) {
+            row.addEventListener('click', function () {
+                window.location.href = this.dataset.href;
+            });
+        });
+    });
+</script>
+
+{% endblock %}

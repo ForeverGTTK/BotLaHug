@@ -35,10 +35,19 @@ def page_render(request,page_address,context):
 def home(request):
     """Renders the home page."""
     assert isinstance(request, HttpRequest)
+    sorted_clubs = Clubs.get_clubs_by_topic()
+    # Move "Example Topic" to the top
+    example_topic = "Example"
+    if example_topic in sorted_clubs:
+        example_clubs = sorted_clubs.pop(example_topic) 
+        sorted_clubs = {example_topic: example_clubs, **sorted_clubs} 
+
     return page_render(
         request,
         'app/home.html',
-        {'sorted_clubs':Clubs.get_clubs()}
+        {
+            'clubs':sorted_clubs,
+         }
     )
 
 def contact(request):

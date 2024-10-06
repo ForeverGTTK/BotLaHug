@@ -1,0 +1,26 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+<div class="mb-4" style="overflow: hidden; height: 25vh; ">
+    <img src="../../{{ details.photo }}" alt="{{ club_name }} logo" class="img-fluid rounded shadow-sm" style="width: 100%; object-fit: cover; opacity: 0.6; margin-top: -10%;">
+</div>
+<div class="container mt-5">
+    <!-- Club Info Section -->
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="display-4">{{ details.name }}</h1>
+            <p class="lead text-muted">{{ details.description }}</p>
+        </div>
+    </div>
+
+    <!-- Dynamic Features Section -->
+    <div class="row mt-5">
+        {% for i, feature in features.items %}
+        <div class="col-md-12 mb-3">
+            <h2>{{ feature.title }}</h2>
+            {% include feature.address %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -2,8 +2,83 @@
 
 {% block content %}
 
-<h3>{{ message }}</h3>
+<div class="container mt-5">
+    <!-- Main Heading -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1 class="display-4">About BotLaHug</h1>
+            <p class="lead">Your go-to solution for streamlined club and athlete management.</p>
+        </div>
+    </div>
 
-<p>Use this area to provide additional information.</p>
+    <!-- Description Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h2 class="mb-3">What We Offer</h2>
+            <p>
+                Welcome to <strong>BotLaHug</strong>, a comprehensive club management platform designed to make the administration of sports clubs, after-school programs, and athlete registrations seamless. Whether you're managing a local sports team or a larger organization, our platform provides the tools you need to succeed.
+            </p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h3 class="mb-3">Key Features</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Club Management:</strong> A centralized system for managing all club details, athletes, and events.</li>
+                <li class="list-group-item"><strong>Athlete Registration:</strong> Register athletes for new seasons and events, track their progress, and store personal data securely.</li>
+                <li class="list-group-item"><strong>Season & Class Scheduling:</strong> Easily organize and customize class schedules, keeping your members informed at all times.</li>
+                <li class="list-group-item"><strong>Progress Tracking:</strong> Generate reports to track athlete development and monitor their progress over time.</li>
+                <li class="list-group-item"><strong>Payment System:</strong> Manage payments with ease using our basic integrated system, with future support for online payments.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Why Choose Us Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h3 class="mb-3">Why Choose BotLaHug?</h3>
+            <p>
+                At BotLaHug, we're not just about simplifying club management, we're about fostering growth. Whether you're a small organization looking to scale or a large entity needing advanced features, our platform adapts to your needs. With customizable club pages, full branding control, and powerful management tools, BotLaHug is your partner in success.
+            </p>
+        </div>
+    </div>
+
+    <!-- Future Features Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h3 class="mb-3">Looking Ahead</h3>
+            <p>Here are some of the exciting future developments in store for BotLaHug:</p>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Two-Factor Authentication (2FA):</strong> Added security for all user accounts.</li>
+                <li class="list-group-item"><strong>Athlete Progress Tracking:</strong> Advanced visualization tools to monitor athlete growth and performance.</li>
+                <li class="list-group-item"><strong>Automated Notifications:</strong> Send reminders and alerts for classes, payments, or upcoming events.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Developer Section -->
+    <div class="row mb-5">
+        <div class="col-md-4 text-center">
+            <!-- Developer Photo
+                                        <img src="{{ developer_image_url }}" alt="Developer Photo" class="img-fluid rounded-circle shadow-lg" style="max-width: 250px;">
+            -->
+        </div>
+        <div class="col-md-8">
+            <h3 class="mb-3">About the Developer</h3>
+            <p>
+                Hello! I'm a 29-year-old Python developer and a third-year student at the Israel Academic College in Ramat Gan, pursuing a degree in software development. Alongside my studies, I serve as a vice battery commander in the reserves. BotLaHug was created as part of my final project to help sports clubs and organizations streamline their operations through a user-friendly platform.
+            </p>
+        </div>
+    </div>
+    <p>
+        for more information go to 
+        <a href="/readme.html" class="btn btn-primary">
+            readme File {{ club_name }} &raquo;
+        </a>
+    </p>
+</div>
 
 {% endblock %}

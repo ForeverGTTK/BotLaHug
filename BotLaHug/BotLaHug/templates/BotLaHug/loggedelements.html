@@ -2,24 +2,38 @@
 <div class="navbar-collapse collapse" id="viewsNav">
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-            
+
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="">schedule</a>
+            <a class="nav-link" href="/club/{{name}}/schedule/">Schedule</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="">athletes</a>
+            <a class="nav-link" href="/club/{{name}}/classes/">All Classes</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/club/{{name}}/teacher/">My Classes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/club/{{name}}/athletes/">Athletes</a>
         </li>
     </ul>
 </div>
-
+                     {% if user.is_staff or user.is_superuser %}
+<li class="nav-item">
+    <a class="nav-link" href="/club/{{name}}/teachers/">Teachers</a>
+</li>
+        {% endif %}
 
 {% else %}
 
 <ul class="navbar-nav mr-auto">
 
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'login' %}">Log in to accsess more features</a>
+        <a class="nav-link" href="/club/{{name}}/athlete/">find athlete</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/club/{{name}}/schedule/">schedule</a>
     </li>
 </ul>
 
