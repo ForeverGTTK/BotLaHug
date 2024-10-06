@@ -1,0 +1,46 @@
+{% extends "BotLaHug/layout.html" %}
+
+{% block content %}
+<div class="mb-4" style="overflow: hidden; height: 30vh;">
+    <img src="../../../{{ club_logo_url }}" alt="{{ club_name }} logo" class="img-fluid rounded shadow-sm" style="width: 100%; object-fit: cover; opacity: 0.6; margin-top: -10%;">
+</div>
+<div class="container mt-4">
+
+    <h2>{{ club_name }} Schedule</h2>
+    <table class="table table-bordered schedule-table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                {% for day in days_of_week %}
+                <th>{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for time_slot, days in schedule_classes.items %}
+            <tr>
+                <td>{{ time_slot }}</td>
+                {% for day, classes in days.items %}
+                <td>
+                    {% for class_info in classes %}
+                    {% if class_info %}
+                    <a href="/club/{{ club_name }}/class/{{ class_info.ID }}" style="text-decoration: none;">
+                        <div class="class-box" style="background-color: {{ class_info.color }};">
+                            <h4>{{ class_info.name }}</h4>
+                            <p>
+                                <strong>Time:</strong> {{ class_info.time }}<br>
+                                <strong>Teacher:</strong> {{ class_info.teacher }}<br>
+                                <strong>Location:</strong> {{ class_info.place }}
+                            </p>
+                        </div>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

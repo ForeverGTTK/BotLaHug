@@ -1,9 +1,9 @@
 {% extends "BotLaHug/layout.html" %}
 
 {% block sidebar %}
-<h4>Class options</h4>
+<h4>Teacher Options</h4>
 <ul class="list-group mb-4">
-    <li class="list-group-item"><a href="{% url 'add_class' club_name=name %}">add A new class</a></li>
+    <li class="list-group-item"><a href="{% url 'add_class' club_name=club_name %}">Add A New Class</a></li>
 </ul>
 {% endblock %}
 
@@ -24,14 +24,13 @@
                 <th>Start Time</th>
                 <th>End Time</th>
                 <th>Place</th>
-                <th>Teacher</th>
                 <th>Monthly Cost</th>
                 <th>Registration Fee</th>
             </tr>
         </thead>
         <tbody>
             {% for cname, class in classes.items %}
-            <tr class="clickable-row" data-href="/club/{{name}}/class/view/{{class.ID}}">
+            <tr class="clickable-row" data-href="/club/{{ club_name }}/class/view/{{ class.ID }}">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ cname }}</td>
                 <td>{{ class.start_date }}</td>
@@ -40,19 +39,14 @@
                 <td>{{ class.start_time }}</td>
                 <td>{{ class.end_time }}</td>
                 <td>{{ class.place }}</td>
-                <td>{{ class.teacher }}</td>
-                <td>
-                    {{ class.price }} &#8362;
-                </td>
-                <td>
-                    {{ class.registration_fee }} &#8362;
-                </td>
+                <td>{{ class.price }} &#8362;</td>
+                <td>{{ class.registration_fee }} &#8362;</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% else %}
-    <p>No classes found for this club.</p>
+    <p>No classes found for this teacher.</p>
     {% endif %}
 </div>
 

@@ -2,6 +2,7 @@
 
 {% block sidebar%}
 
+
 <div class="row">
     <div class="col-md-8">
         <h1 class="display-4">{{ class_details.name }}</h1>
@@ -22,17 +23,21 @@
 
         {% block content %}
 <div class="container mt-4">
-    <div class="container md-4">
+    <div class="container mb-4">
 
         <!-- Stats Section -->
         <h3>Statistics</h3>
         <p>Total Registered Athletes: <strong>{{ total_athletes }}</strong></p>
     </div>
-    <div class="container md-4">
+    <div class="container co-md-4">
 
         <a href="{% url 'edit_class' club_name=name class_id=class_details.ID %}" class="btn btn-secondary mt-3">
             Edit Class
         </a>
+        <a href="{% url 'register_athlete' club_name=name class_id=class_details.ID %}" class="btn btn-secondary mt-3">
+            Edit Class
+        </a>
+        <li class="list-group-item"><a href="/club/{{ name }}/class/register/">register athlete to a class</a></li>
     </div>
     <!-- Athletes Table -->
     <h4>Registered Athletes</h4>

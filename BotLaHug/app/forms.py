@@ -20,24 +20,25 @@ class BootstrapAuthenticationForm(AuthenticationForm):
                                    'placeholder':'Password'}))
 
 class ExistingAthleteRegistrationForm(forms.ModelForm):
-    classes = forms.ModelChoiceField(
+     classes = forms.ModelChoiceField(
         queryset=Class.objects.all(),
-        widget=forms.Select(attrs={'classes': 'form-control'}),
+        widget=forms.Select(attrs={'class': 'form-control'}),  # Changed 'classes' to 'class'
         label="Select Class",
-    )
+         )
 
-    class Meta:
+     class Meta:
         model = Registration
-        exclude = ['created_by', 'description', 'athlete','class_id' ,'status']
+        exclude = ['created_by', 'description', 'athlete', 'class_id', 'status']
 
-    def __init__(self, *args, **kwargs):
+     def __init__(self, *args, **kwargs):
         club = kwargs.pop('club', None)
         super(ExistingAthleteRegistrationForm, self).__init__(*args, **kwargs)
         if club:
-            # Filter athletes based on the club
-            self.fields['classes'].queryset = Class.objects.filter(season = Season.objects.filter(club = club,is_active = True).first())
-            pass
-
+            # Filter the classes based on the club's current active season
+            active_season = Season.objects.filter(club=club, is_active=True).first()
+            if active_season:
+                self.fields['classes'].queryset = Class.objects.filter(season=active_season)
+                
 class AthleteRegistrationForm(forms.ModelForm):
     class Meta:
         model = Athlete
@@ -88,3 +89,16 @@ class ClassForm(forms.ModelForm):
             self.add_error('end_date', 'End date must be after start date.')
 
         return cleaned_data
+    
+class TeacherForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label="Password")
+
+    class Meta:
+        model = User
+        exclude = ['created_by']
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+        return password

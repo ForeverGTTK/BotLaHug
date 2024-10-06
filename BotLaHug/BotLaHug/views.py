@@ -11,7 +11,7 @@ from django.http import HttpRequest, JsonResponse
 from django.db.models import Count
 from collections import defaultdict
 from app import models
-from app.forms import AthleteRegistrationForm, RegistrationForm,ExistingAthleteRegistrationForm,ClassForm
+from app.forms import AthleteRegistrationForm, RegistrationForm,ExistingAthleteRegistrationForm,ClassForm,TeacherForm
 
 
 
@@ -440,7 +440,7 @@ def generate_time_slots(classes, days_of_week):
 def register_athlete(request, club_name, class_id=None):
     club = get_object_or_404(models.Clubs, web_name=club_name)
     current_season = models.Season.objects.filter(club=club, is_active=True).first()
-    class_instance = get_object_or_404(models.Class, season=current_season)
+    class_instance = get_object_or_404(models.Class, season=current_season,ID = class_id)
 
 
     if request.method == 'POST':
@@ -496,20 +496,16 @@ def register_existing_athlete(request, club_name, athlete_id):
             registration.description = 'Form auto created registration'
             registration.athlete = athlete
 
-            # Retrieve the class the athlete is being registered for
-            class_instance = form.cleaned_data.get('class_id')
-            registration.class_id = class_instance
+            selected_class = form.cleaned_data['classes']
+            registration.class_id = selected_class
 
-            # Use the get_class() method to get class details
-            class_details = class_instance.get_class()
-
+            class_details = selected_class.get_class()
             registration.status = 'New'
             registration.save()
 
             return redirect('athlete_profile', club_name=club_name, athlete_id=athlete.ID)
     else:
         form = ExistingAthleteRegistrationForm(club=club)
-
     context = {
         'form': form,
         'club_name': club_name,
@@ -522,10 +518,10 @@ def register_existing_athlete(request, club_name, athlete_id):
         context,
         club_name=club_name
     )
+
+
 @login_required
 @user_passes_test(is_manager)
-
-
 def edit_class(request,club_name, class_id):
     """
     Handles adding or editing a class for manager users.
@@ -537,8 +533,10 @@ def edit_class(request,club_name, class_id):
     Returns:
         Rendered form for creating or updating a class.
     """
-    
-    class_instance = get_object_or_404(models.Class, ID=class_id)
+    if class_id:
+        class_instance = get_object_or_404(models.Class, ID=class_id)
+    else:
+        class_instance = None
     club_logo = get_object_or_404(models.Clubs, web_name=club_name).get_club()['photo']
 
     if request.method == 'POST':
@@ -547,7 +545,7 @@ def edit_class(request,club_name, class_id):
             class_obj = form.save(commit=False)
             class_obj.created_by = request.user  # Set the current user as creator
             class_obj.save()
-            return redirect('class_list')  # Redirect to a class list page or another relevant page
+            return redirect('club_classes',club_name= club_name)  # Redirect to a class list page or another relevant page
     else:
         form = ClassForm(instance=class_instance)
 
@@ -559,6 +557,124 @@ def edit_class(request,club_name, class_id):
     return page_render(request, 'BotLaHug/manager_pages/class_form.html', context,        club_name=club_name
  )
 
-def manage_class(request,club_name, class_id=None):
+def manage_class(request,club_name):
     
     return edit_class(request, club_name=club_name,class_id=None)
+
+
+def schedule_view(request, club_name):
+    """
+    Renders the club schedule page with the weekly class schedule.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The web_name of the club used to retrieve the specific club instance.
+
+    Returns:
+        HttpResponse: Rendered club schedule page with class times.
+    """
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    classes = models.Class.get_classes_by_current_season(club=club)
+    days_of_week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    schedule_classes = generate_time_slots(classes, days_of_week)
+
+    return page_render(
+        request,
+        'BotLaHug/client_pages/schedule.html',
+        {
+            'schedule_classes': schedule_classes,
+            'days_of_week': days_of_week,
+            'club_name': club_name,
+            'club_logo_url': club.get_club().get('photo'),
+        },
+        club_name=club_name
+    )
+
+def teacher_view(request, club_name, teacher_id):
+    """
+    Renders the teacher's page displaying the classes they teach.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The web_name of the club.
+        teacher_id (int): The ID of the teacher.
+
+    Returns:
+        HttpResponse: Rendered teacher page with the classes they teach.
+    """
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    teacher = get_object_or_404(models.Teacher, ID=teacher_id)
+    classes = models.Class.objects.filter(teacher=teacher, season=models.Season.objects.filter(club=club, is_active=True).first())
+
+    classes_dict = {
+        class_obj.name: class_obj for class_obj in classes
+    }
+
+    return page_render(
+        request,
+        'BotLaHug/club_pages/teacher_classes.html',
+        {
+            'name': teacher.get_full_name(),
+            'classes': classes_dict,
+            'club_name': club_name
+        },
+        club_name=club_name
+    )
+
+def add_teacher(request, club_name):
+    """
+    View to add a new teacher to the club, with teacher-specific permissions.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The web_name of the club.
+
+    Returns:
+        HttpResponse: Rendered teacher form page, or redirect after success.
+    """
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+
+    if request.method == 'POST':
+        form = TeacherForm(request.POST)
+        if form.is_valid():
+            # Create the user with the provided data
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+
+            # Assign teacher permissions (add the user to the teacher group)
+            teacher_group, created = Group.objects.get_or_create(name='Teacher')
+            user.groups.add(teacher_group)
+
+            # Create the Teacher instance (assuming there is a Teacher model)
+            models.Teacher.objects.create(user=user, club=club, **form.cleaned_data)
+
+            return redirect('teacher_view', club_name=club_name, teacher_id=user.id)
+
+    else:
+        form = TeacherForm()
+
+    return render(request, 'BotLaHug/manager_pages/teacher_form.html', {'form': form, 'club_name': club_name})
+
+def connected_teachers(request, club_name):
+    """
+    Renders the connected teachers for the given club.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        club_name (str): The name of the club to fetch teachers for.
+
+    Returns:
+        HttpResponse: Rendered page displaying the teachers.
+    """
+    club = get_object_or_404(models.Clubs, web_name=club_name)
+    
+    # Assuming you have a way to identify teachers in your system
+    teachers = models.User.objects.filter(groups__name='Teachers')  # Assuming you have a 'Teachers' group
+    
+    context = {
+        'name': club_name,
+        'teachers': teachers,
+    }
+    
+    return render(request, 'BotLaHug/manager_pages/club_teacher.html', context)
